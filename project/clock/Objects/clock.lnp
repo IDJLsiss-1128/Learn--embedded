@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\clock.obj",
+".\Objects\tuble.obj",
+".\Objects\interrupts.obj",
+".\Objects\keyboard.obj" 
+TO ".\Objects\clock" 
+PRINT(".\Listings\clock.m51") RAMSIZE(256) 

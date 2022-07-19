@@ -1,0 +1,404 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    06/13/2022  20:20:00  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\PROGRAM FILES (X86)\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\player.obj, .\Objects\beep.obj, .\Objects\
+>> interrupts.obj TO .\Objects\player PRINT (.\Listings\player.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\player.obj (PLAYER)
+  .\Objects\beep.obj (BEEP)
+  .\Objects\interrupts.obj (INTERRUPTS)
+  D:\PROGRAM FILES (X86)\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  D:\PROGRAM FILES (X86)\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDPTR)
+  D:\PROGRAM FILES (X86)\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+  D:\PROGRAM FILES (X86)\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
+  D:\PROGRAM FILES (X86)\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\player (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         ?DT?BEEP
+                    000AH     0016H                  *** GAP ***
+            BIT     0020H.0   0000H.1   UNIT         ?BI?MAIN
+                    0020H.1   0000H.7                *** GAP ***
+            DATA    0021H     0042H     UNIT         ?DT?MAIN
+            IDATA   0063H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     UNIT         ?PR?ON_BEEP?BEEP
+            CODE    0006H     0003H     UNIT         ?PR?OFF_BEEP?BEEP
+            CODE    0009H     0001H     UNIT         ?PR?DISPLAY_PLAYER?PLAYER
+                    000AH     0001H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     000AH     UNIT         ?PR?_INIT_INT0_INTERRUPT?INTERRUPTS
+                    0018H     0003H                  *** GAP ***
+            CODE    001BH     0003H     ABSOLUTE     
+            CODE    001EH     009BH     UNIT         ?C?LIB_CODE
+            CODE    00B9H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0145H     006AH     UNIT         ?PR?CHANGE_INTERRUPT?MAIN
+            CODE    01AFH     0068H     UNIT         ?PR?TYSTEM_INTERRUPT?MAIN
+            CODE    0217H     0052H     UNIT         ?C_INITSEG
+            CODE    0269H     004BH     UNIT         ?PR?_DISPLAY_PLAYER?BEEP
+            CODE    02B4H     0038H     UNIT         ?CO?BEEP
+            CODE    02ECH     002FH     UNIT         ?PR?MAIN?MAIN
+            CODE    031BH     0013H     UNIT         ?PR?_INIT_T0_3_INTERRUPT?INTERRUPTS
+            CODE    032EH     0011H     UNIT         ?PR?_INIT_T0_1_INTERRUPT?INTERRUPTS
+            CODE    033FH     0011H     UNIT         ?PR?_INIT_T0_2_INTERRUPT?INTERRUPTS
+            CODE    0350H     0011H     UNIT         ?PR?_INIT_T1_1_INTERRUPT?INTERRUPTS
+            CODE    0361H     0011H     UNIT         ?PR?_INIT_T1_2_INTERRUPT?INTERRUPTS
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 2
+
+
+            CODE    0372H     000EH     UNIT         ?PR?_INIT_T0_0_INTERRUPT?INTERRUPTS
+            CODE    0380H     000EH     UNIT         ?PR?_INIT_T1_0_INTERRUPT?INTERRUPTS
+            CODE    038EH     000AH     UNIT         ?PR?_INIT_INT1_INTERRUPT?INTERRUPTS
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\player (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?PR?CHANGE_INTERRUPT?MAIN
+  +--> ?PR?_DISPLAY_PLAYER?BEEP
+  +--> ?PR?ON_BEEP?BEEP
+  +--> ?PR?OFF_BEEP?BEEP
+
+?PR?_DISPLAY_PLAYER?BEEP
+  +--> ?CO?BEEP
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN
+  +--> ?PR?_DISPLAY_PLAYER?BEEP
+  +--> ?PR?_INIT_T0_1_INTERRUPT?INTERRUPTS
+  +--> ?PR?_INIT_T1_1_INTERRUPT?INTERRUPTS
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\player (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:01AFH         PUBLIC        tystem_interrupt
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:0021H         PUBLIC        length
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:0044H         PUBLIC        music
+  C:02ECH         PUBLIC        main
+  D:0060H         PUBLIC        count
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0145H         PUBLIC        change_interrupt
+  D:0061H         PUBLIC        time_count
+  D:008CH         PUBLIC        TH0
+  D:008DH         PUBLIC        TH1
+  D:008AH         PUBLIC        TL0
+  D:008BH         PUBLIC        TL1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 3
+
+
+  B:0088H.4       PUBLIC        TR0
+  B:0088H.6       PUBLIC        TR1
+  B:0020H.0       PUBLIC        sym_beep
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:02ECH         LINE#         14
+  C:02ECH         LINE#         15
+  C:0312H         LINE#         16
+  C:0319H         LINE#         17
+  C:0319H         LINE#         19
+  -------         ENDPROC       MAIN
+  -------         PROC          CHANGE_INTERRUPT
+  C:0145H         LINE#         23
+  C:0162H         LINE#         24
+  C:0164H         LINE#         25
+  C:0173H         LINE#         26
+  C:0185H         LINE#         27
+  C:0187H         LINE#         28
+  C:018FH         LINE#         29
+  C:0192H         LINE#         30
+  C:0194H         LINE#         31
+  -------         ENDPROC       CHANGE_INTERRUPT
+  -------         PROC          TYSTEM_INTERRUPT
+  C:01AFH         LINE#         33
+  C:01C2H         LINE#         34
+  C:01C4H         LINE#         35
+  C:01C7H         LINE#         36
+  C:01CAH         LINE#         37
+  C:01CCH         LINE#         38
+  C:01DDH         LINE#         39
+  C:01F4H         LINE#         40
+  C:01F6H         LINE#         41
+  C:01FCH         LINE#         42
+  C:01FEH         LINE#         43
+  C:01FEH         LINE#         44
+  C:01FEH         LINE#         45
+  C:0206H         LINE#         46
+  -------         ENDPROC       TYSTEM_INTERRUPT
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        PLAYER
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0009H         PUBLIC        display_player
+  -------         PROC          DISPLAY_PLAYER
+  C:0009H         LINE#         3
+  C:0009H         LINE#         5
+  -------         ENDPROC       DISPLAY_PLAYER
+  -------         ENDMOD        PLAYER
+
+  -------         MODULE        BEEP
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  B:0090H.5       PUBLIC        BEEP
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 4
+
+
+  D:0008H         PUBLIC        music_buff
+  C:02B4H         PUBLIC        scale_H
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:02D0H         PUBLIC        scale_L
+  C:0006H         PUBLIC        off_beep
+  C:0003H         PUBLIC        on_beep
+  D:00C8H         PUBLIC        T2CON
+  C:0269H         PUBLIC        _display_player
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          ON_BEEP
+  C:0003H         LINE#         30
+  C:0003H         LINE#         31
+  C:0005H         LINE#         32
+  -------         ENDPROC       ON_BEEP
+  -------         PROC          OFF_BEEP
+  C:0006H         LINE#         37
+  C:0006H         LINE#         38
+  C:0008H         LINE#         39
+  -------         ENDPROC       OFF_BEEP
+  -------         PROC          _DISPLAY_PLAYER
+  D:0007H         SYMBOL        par_note
+  C:0269H         LINE#         46
+  C:0269H         LINE#         47
+  C:0291H         LINE#         48
+  C:02ADH         LINE#         49
+  C:02B3H         LINE#         50
+  -------         ENDPROC       _DISPLAY_PLAYER
+  -------         ENDMOD        BEEP
+
+  -------         MODULE        INTERRUPTS
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0372H         PUBLIC        _init_t0_0_interrupt
+  C:0380H         PUBLIC        _init_t1_0_interrupt
+  C:032EH         PUBLIC        _init_t0_1_interrupt
+  C:0350H         PUBLIC        _init_t1_1_interrupt
+  C:033FH         PUBLIC        _init_t0_2_interrupt
+  C:0361H         PUBLIC        _init_t1_2_interrupt
+  C:031BH         PUBLIC        _init_t0_3_interrupt
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  B:00A8H.1       PUBLIC        ET0
+  B:00A8H.3       PUBLIC        ET1
+  D:008CH         PUBLIC        TH0
+  B:00A8H.0       PUBLIC        EX0
+  B:0088H.0       PUBLIC        IT0
+  D:008DH         PUBLIC        TH1
+  B:00A8H.2       PUBLIC        EX1
+  B:0088H.2       PUBLIC        IT1
+  D:008AH         PUBLIC        TL0
+  D:008BH         PUBLIC        TL1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 5
+
+
+  B:0088H.4       PUBLIC        TR0
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+  C:000EH         PUBLIC        _init_int0_interrupt
+  C:038EH         PUBLIC        _init_int1_interrupt
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _INIT_INT0_INTERRUPT
+  D:0007H         SYMBOL        par_moder
+  C:000EH         LINE#         53
+  C:000EH         LINE#         54
+  C:0013H         LINE#         55
+  C:0015H         LINE#         56
+  C:0017H         LINE#         57
+  -------         ENDPROC       _INIT_INT0_INTERRUPT
+  -------         PROC          _INIT_INT1_INTERRUPT
+  D:0007H         SYMBOL        par_moder
+  C:038EH         LINE#         63
+  C:038EH         LINE#         64
+  C:0393H         LINE#         65
+  C:0395H         LINE#         66
+  C:0397H         LINE#         67
+  -------         ENDPROC       _INIT_INT1_INTERRUPT
+  -------         PROC          _INIT_T0_0_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:0372H         LINE#         74
+  C:0372H         LINE#         75
+  C:0375H         LINE#         76
+  C:0375H         LINE#         77
+  C:0377H         LINE#         78
+  C:0379H         LINE#         79
+  C:037BH         LINE#         80
+  C:037DH         LINE#         81
+  C:037FH         LINE#         82
+  -------         ENDPROC       _INIT_T0_0_INTERRUPT
+  -------         PROC          _INIT_T0_1_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:032EH         LINE#         89
+  C:032EH         LINE#         90
+  C:0331H         LINE#         91
+  C:0334H         LINE#         92
+  C:0336H         LINE#         93
+  C:0338H         LINE#         94
+  C:033AH         LINE#         95
+  C:033CH         LINE#         96
+  C:033EH         LINE#         97
+  -------         ENDPROC       _INIT_T0_1_INTERRUPT
+  -------         PROC          _INIT_T0_2_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:033FH         LINE#         104
+  C:033FH         LINE#         105
+  C:0342H         LINE#         106
+  C:0345H         LINE#         107
+  C:0347H         LINE#         108
+  C:0349H         LINE#         109
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 6
+
+
+  C:034BH         LINE#         110
+  C:034DH         LINE#         111
+  C:034FH         LINE#         112
+  -------         ENDPROC       _INIT_T0_2_INTERRUPT
+  -------         PROC          _INIT_T0_3_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:031BH         LINE#         120
+  C:031BH         LINE#         121
+  C:031EH         LINE#         122
+  C:0321H         LINE#         123
+  C:0323H         LINE#         124
+  C:0325H         LINE#         125
+  C:0327H         LINE#         126
+  C:0329H         LINE#         127
+  C:032BH         LINE#         128
+  C:032DH         LINE#         129
+  -------         ENDPROC       _INIT_T0_3_INTERRUPT
+  -------         PROC          _INIT_T1_0_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:0380H         LINE#         136
+  C:0380H         LINE#         137
+  C:0383H         LINE#         138
+  C:0383H         LINE#         139
+  C:0385H         LINE#         140
+  C:0387H         LINE#         141
+  C:0389H         LINE#         142
+  C:038BH         LINE#         143
+  C:038DH         LINE#         144
+  -------         ENDPROC       _INIT_T1_0_INTERRUPT
+  -------         PROC          _INIT_T1_1_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:0350H         LINE#         151
+  C:0350H         LINE#         152
+  C:0353H         LINE#         153
+  C:0356H         LINE#         154
+  C:0358H         LINE#         155
+  C:035AH         LINE#         156
+  C:035CH         LINE#         157
+  C:035EH         LINE#         158
+  C:0360H         LINE#         159
+  -------         ENDPROC       _INIT_T1_1_INTERRUPT
+  -------         PROC          _INIT_T1_2_INTERRUPT
+  D:0007H         SYMBOL        par_h
+  D:0005H         SYMBOL        par_l
+  C:0361H         LINE#         166
+  C:0361H         LINE#         167
+  C:0364H         LINE#         168
+  C:0367H         LINE#         169
+  C:0369H         LINE#         170
+  C:036BH         LINE#         171
+  C:036DH         LINE#         172
+  C:036FH         LINE#         173
+  C:0371H         LINE#         174
+  -------         ENDPROC       _INIT_T1_2_INTERRUPT
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/13/2022  20:20:00  PAGE 7
+
+
+  -------         ENDMOD        INTERRUPTS
+
+  -------         MODULE        ?C?CLDPTR
+  C:001EH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?CLDOPTR
+  C:0037H         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+  -------         MODULE        ?C?UIDIV
+  C:0064H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DISPLAY_PLAYER?PLAYER
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_INT0_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_INT1_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_T0_0_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_T0_2_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_T0_3_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_T1_0_INTERRUPT?INTERRUPTS
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INIT_T1_2_INTERRUPT?INTERRUPTS
+
+Program Size: data=77.1 xdata=0 code=916
+LINK/LOCATE RUN COMPLETE.  8 WARNING(S),  0 ERROR(S)

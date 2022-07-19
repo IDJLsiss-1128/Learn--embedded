@@ -1,0 +1,277 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 19:40:22 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\source\
+                    -module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "chronograph.h"
+   3          #include "interrupts.h"
+   4          #include "calculator.h"
+   5          #include "heartbeat.h"
+   6          #include "keyboard.h"
+   7          #include "clock.h"
+   8          #include "tuble.h"
+   9          #include "type.h"
+  10          #include "key.h"
+  11          
+  12          #define BOOL_TRUE 1
+  13          #define BOOL_FALSE 0
+  14          
+  15          /*系统全局变量*/
+  16          uint16 sys_count = 0,
+  17                  sys_sign = 0
+  18                  ;
+  19          
+  20          uint8 sys_site = 0
+  21                  ;
+  22          
+  23          bit sym_unit = 0,
+  24                  sym_5ms = 0, // 5ms只能用作按键扫描
+  25                  sym_50ms = 0,
+  26                  sym_100ms = 0,
+  27                  sym_250ms = 0,
+  28                  sym_500ms = 0,
+  29                  sym_1s = 0
+  30                  ;
+  31          
+  32          
+  33          /*计算器模块*/
+  34          
+  35          
+  36          int main() {
+  37   1              init_t0_1_interrupt(0xF7, 0x00);
+  38   1              updata_time();
+  39   1              while(BOOL_TRUE) {
+  40   2                      /*周期性任务*/
+  41   2                      if(sym_unit) {
+  42   3                              sym_unit = 0;
+  43   3                              display_site_tuble(sys_site);
+  44   3                              switch(sys_sign) {
+  45   4                                      case 0:
+  46   4                                              if(sym_updata_state) {
+  47   5                                                      clear_point_site_tuble(4);
+  48   5                                                      clear_point_site_tuble(2);
+  49   5                                                      clear_point_site_tuble(1);
+  50   5                                              } // 显示时间不显示点
+  51   4                                              else {
+  52   5                                                      display_point_site_tuble(4);
+  53   5                                                      display_point_site_tuble(2);
+  54   5                                              } // 显示年显示点
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 19:40:22 PAGE 2   
+
+  55   4                                              break;
+  56   4                                      case 1:
+  57   4      
+  58   4                                              break;
+  59   4                              }
+  60   3                              sys_site++;
+  61   3                              if(sys_site >= 8) sys_site = 0;
+  62   3                      }
+  63   2                      
+  64   2                      if(sym_5ms) {
+  65   3                              sym_5ms = 0;
+  66   3                              detect_key();
+  67   3                              detect_col_keyboard();
+  68   3                      }
+  69   2      
+  70   2                      if(sym_50ms) {
+  71   3                              sym_50ms = 0;
+  72   3                              start_heartbeat();
+  73   3                              heartbeat_site++;
+  74   3                              switch(sys_sign) {
+  75   4                                      case 0:
+  76   4      
+  77   4                                              break;
+  78   4                                      case 1:
+  79   4                                              
+  80   4                                              break;
+  81   4                              }
+  82   3                              if(heartbeat_site > 8) heartbeat_site = 0;
+  83   3                      }
+  84   2      
+  85   2                      if(sym_250ms) {
+  86   3                              sym_250ms = 0;
+  87   3                              switch(sys_sign) {
+  88   4                                      case 0:
+  89   4                                              break;
+  90   4                                      case 1:
+  91   4                                              if(sym_display_ab)
+  92   4                                                      updata_value_all_tuble(operator_b,10);
+  93   4                                              else
+  94   4                                                      updata_value_all_tuble(operator_a,10);
+  95   4                                              break;
+  96   4                              }
+  97   3                      }
+  98   2                      
+  99   2                      if(sym_100ms) {
+ 100   3                              sym_100ms = 0;
+ 101   3                              switch(sys_sign) {
+ 102   4                                      case 0:
+ 103   4                                              break;
+ 104   4                                      case 1:
+ 105   4                                              break;
+ 106   4                                      case 2:
+ 107   4                                              updata_chronograph();
+ 108   4                                              break;
+ 109   4                              }
+ 110   3                      }
+ 111   2      
+ 112   2                      if(sym_500ms) {
+ 113   3                              sym_500ms = 0;
+ 114   3                              switch(sys_sign) {
+ 115   4                                      case 0:
+ 116   4                                              if(sym_state_glint) {
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 19:40:22 PAGE 3   
+
+ 117   5                                                      if(sym_updata_state) {
+ 118   6                                                              switch (state_time) {
+ 119   7                                                                      case 1:
+ 120   7                                                                              glint_hour(sym_glint|0x00);
+ 121   7                                                                              break;
+ 122   7                                                                      case 2:
+ 123   7                                                                              glint_minute(sym_glint|0x00);
+ 124   7                                                                              break;
+ 125   7                                                              }
+ 126   6                                                      } // 显示时间
+ 127   5                                                      else {
+ 128   6                                                              switch (state_time) {
+ 129   7                                                                      case 1:
+ 130   7                                                                              glint_year(sym_glint|0x00);
+ 131   7                                                                              break;
+ 132   7                                                                      case 2:                                                 
+ 133   7                                                                              glint_month(sym_glint|0x00);
+ 134   7                                                                              break;
+ 135   7                                                                      case 3:
+ 136   7                                                                              glint_day(sym_glint|0x00);
+ 137   7                                                                              break;
+ 138   7                                                              }
+ 139   6                                                      } // 显示日期
+ 140   5                                              }
+ 141   4                                              sym_glint = !sym_glint;
+ 142   4                                              break;
+ 143   4                                      case 1:
+ 144   4                                              break;
+ 145   4                              }
+ 146   3                      }
+ 147   2      
+ 148   2                      if(sym_1s) {
+ 149   3                              sym_1s = 0;
+ 150   3                              switch(sys_sign) {
+ 151   4                                      case 0:
+ 152   4                                              glint_count_10s--;
+ 153   4                                              if(glint_count_10s <= 0) {
+ 154   5                                                      sym_state_glint = 0;
+ 155   5                                                      if(sym_updata_state) {
+ 156   6                                                              glint_hour(0x01);
+ 157   6                                                              glint_minute(0x01);
+ 158   6                                                      } // 恢复正常时间
+ 159   5                                                      else {
+ 160   6                                                              glint_year(0x01);
+ 161   6                                                              glint_month(0x01);
+ 162   6                                                              glint_day(0x01);
+ 163   6                                                      } // 恢复正常日期
+ 164   5                                                      glint_count_10s = 10;
+ 165   5                                                      state_time = 0;
+ 166   5                                              } // 10秒钟没有操作则恢复正常
+ 167   4                                              if(sym_data_time||sym_data_date) {
+ 168   5                                                      sym_data_time = 0;
+ 169   5                                                      if(sym_updata_state) {
+ 170   6                                                              updata_time();
+ 171   6                                                      }
+ 172   5                                                      else {
+ 173   6                                                              updata_date();
+ 174   6                                                      }
+ 175   5                                              }
+ 176   4                                              break;
+ 177   4                                      case 1:
+ 178   4                                              break;
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 19:40:22 PAGE 4   
+
+ 179   4                              }
+ 180   3                              updata_total_time(); // 读秒操作
+ 181   3                      }
+ 182   2                      
+ 183   2                      /*非周期性任务*/
+ 184   2                      switch(sys_sign) {
+ 185   3                              case 0:
+ 186   3                                      keyboard_clock();
+ 187   3                                      break;
+ 188   3                              case 1:
+ 189   3                                      keyboard_calculator();
+ 190   3                                      break;
+ 191   3                              case 2:
+ 192   3                                      keyboard_chronograph();
+ 193   3                                      break;
+ 194   3                      }
+ 195   2                      
+ 196   2                      if(KEY1_UP && (!KEY2_UP) && (!KEY3_UP) && (!KEY4_UP)) {
+ 197   3                              KEY1_UP = 0;
+ 198   3                              sys_sign = 0;
+ 199   3                              if(sym_updata_state) {
+ 200   4                                      updata_time();
+ 201   4                              }
+ 202   3                              else {
+ 203   4                                      updata_date();
+ 204   4                              }
+ 205   3                      }
+ 206   2                      
+ 207   2                      if((!KEY1_UP) && KEY2_UP && (!KEY3_UP) && (!KEY4_UP)) {
+ 208   3                              KEY2_UP = 0;
+ 209   3                              sys_sign = 1;
+ 210   3                      }
+ 211   2                      
+ 212   2                      if((!KEY1_UP) && (!KEY2_UP) && KEY3_UP && (!KEY4_UP)) {
+ 213   3                              KEY3_UP = 0;
+ 214   3                              sys_sign = 2;
+ 215   3                      }
+ 216   2              }
+ 217   1      }
+ 218          
+ 219          void interrupt_func() interrupt 1 {
+ 220   1              TR0 = 0;
+ 221   1              TH0 = 0xF7;
+ 222   1              TL0 = 0x00;
+ 223   1              TR0 = 1;
+ 224   1              sym_unit = 1;
+ 225   1              if(sys_count%2 == 1) {
+ 226   2                      sym_5ms = 1;
+ 227   2              }
+ 228   1              if(sys_count%20 == 13) {
+ 229   2                      sym_50ms =1;
+ 230   2              }
+ 231   1              if(sys_count%40 == 37) {
+ 232   2                      sym_100ms = 1;
+ 233   2              }
+ 234   1              if(sys_count%100 == 83) {
+ 235   2                      sym_250ms = 1;
+ 236   2              }
+ 237   1              if(sys_count%200 == 171) {
+ 238   2                      sym_500ms = 1;
+ 239   2              }
+ 240   1              if(sys_count >= 400) {
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 19:40:22 PAGE 5   
+
+ 241   2                      sym_1s = 1;
+ 242   2                      sys_count = 0;
+ 243   2              }
+ 244   1              sys_count++;
+ 245   1      } // T0 用作系统时间(心跳)
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    612    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      7    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

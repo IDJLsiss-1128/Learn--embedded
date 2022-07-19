@@ -1,0 +1,66 @@
+C51 COMPILER V9.59.0.0   TIMES                                                             06/14/2022 11:48:45 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TIMES
+OBJECT MODULE PLACED IN .\Objects\times.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\times.c OPTIMIZE(8,SPEED) BROWSE INCDIR
+                    -(..\..\source\module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\times.lst) OBJECT(.\Objects\times.obj)
+
+line level    source
+
+   1          // #include "times.h"
+   2          
+   3          // void delay_1ms() {
+   4          //      uint8 cir_time = 150;
+   5          //      while(--cir_time);
+   6          // }
+   7          
+   8          // void delay_nms(uint8 par_times) {
+   9          //      while(--par_times) {
+  10          //              delay_1ms();
+  11          //              delay_1ms();
+  12          //      }
+  13          // }
+  14          
+  15          // void delay_1s() {
+  16          //      delay_nms(200);
+  17          //      delay_nms(200);
+  18          //      delay_nms(200);
+  19          //      delay_nms(200);
+  20          //      delay_nms(200);
+  21          // }
+  22          
+  23          // void delay_ns(uint8 par_times) {
+  24          //      while(--par_times) {
+  25          //              delay_1s();
+  26          //      }
+  27          // }
+  28          
+  29          
+  30          #include <reg51.h>
+  31          sbit BEEP=P1^4; //定义蜂鸣器操作相关的特殊功能位
+  32          #define beepOn() BEEP=0 //定义打开蜂鸣器的伪函数
+  33          #define beepOff() BEEP=1 //定义关闭蜂鸣器的伪函数
+  34          int main(){
+  35   1      int i;
+  36   1      while(1){
+  37   2      beepOn(); //打开蜂鸣器，使其发出声音
+  38   2      for(i=-30000;i<30000;i++); //约 500 毫秒延时
+  39   2      beepOff(); //关闭蜂鸣器，使其停止发声
+  40   2      for(i=-30000;i<30000;i++); //约 500 毫秒延时
+  41   2      }
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     41    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

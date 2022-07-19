@@ -1,0 +1,283 @@
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/09/2022 22:17:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CLOCK
+OBJECT MODULE PLACED IN .\Objects\clock.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE clock.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\source
+                    -;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\clock.lst) OBJECT(.\Objects\clock.obj)
+
+line level    source
+
+   1          #include "clock.h"
+   2          #include "tuble.h"
+   3          
+   4          bit sym_data_time = 0, sym_data_date = 0;
+   5          int16 year = 2020;
+   6          int8 month = 1, day = 1, hour = 0, minute = 0, second = 0;
+   7          
+   8          uint8 day_of_month[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+   9          
+  10          uint8 is_leap() {
+  11   1              if(year%4 == 0) {
+  12   2                      if(year%100 == 0 && year%400 != 0) {
+  13   3                              return 0;
+  14   3                      }
+  15   2                      return 1;
+  16   2              }
+  17   1              return 0;
+  18   1      }
+  19          
+  20          
+  21          void updata_total_time() {
+  22   1              second++;
+  23   1              sym_data_time = 1;
+  24   1              if(second > 59) {
+  25   2                      second = 0;
+  26   2                      minute++;
+  27   2                      if(minute > 59) {
+  28   3                              minute = 0;
+  29   3                              hour++;
+  30   3                              if(hour > 23) {
+  31   4                                      hour = 0;
+  32   4                                      sym_data_date = 1;
+  33   4                                      day++;
+  34   4                                      if(day > day_of_month[(month-1)%12]+is_leap()) {
+  35   5                                              day = 1;
+  36   5                                              month++;
+  37   5                                              if(month > 12) {
+  38   6                                                      month = 1;
+  39   6                                                      year++;
+  40   6                                              }
+  41   5                                      }
+  42   4                              }
+  43   3                      }
+  44   2              }
+  45   1      
+  46   1      }
+  47          
+  48          
+  49          void updata_time() {
+  50   1              /*更新时*/
+  51   1              updata_value_site_tuble(7, hour/10%10);
+  52   1              updata_value_site_tuble(6, hour/1%10);
+  53   1              
+  54   1              updata_value_site_tuble(5, 16);
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/09/2022 22:17:19 PAGE 2   
+
+  55   1              /*更新分*/
+  56   1              updata_value_site_tuble(4, minute/10%10);
+  57   1              updata_value_site_tuble(3, minute/1%10);
+  58   1      
+  59   1              updata_value_site_tuble(2, 16);
+  60   1              /*更新秒*/
+  61   1              updata_value_site_tuble(1, second/10%10);
+  62   1              updata_value_site_tuble(0, second/1%10);
+  63   1      }
+  64          
+  65          void updata_date() {
+  66   1              /*更新年*/
+  67   1              updata_value_site_tuble(7, year/1000%10);
+  68   1              updata_value_site_tuble(6, year/100%10);
+  69   1              updata_value_site_tuble(5, year/10%10);
+  70   1              updata_value_site_tuble(4, year/1%10);
+  71   1      
+  72   1              /*更新月*/
+  73   1              updata_value_site_tuble(3, month/10%10);
+  74   1              updata_value_site_tuble(2, month/1%10);
+  75   1      
+  76   1              /*更新日*/
+  77   1              updata_value_site_tuble(1, day/10%10);
+  78   1              updata_value_site_tuble(0, day/1%10);
+  79   1      }
+  80          
+  81          /**
+  82           * @brief 闪烁小时
+  83           * @param par_glint 闪烁状态
+  84           */
+  85          void glint_hour(bit par_glint) {
+  86   1              glint_site_tuble(7, par_glint);
+  87   1              glint_site_tuble(6, par_glint);
+  88   1              glint_site_tuble(5, 0x01);
+  89   1              glint_site_tuble(4, 0x01);
+  90   1              glint_site_tuble(3, 0x01);
+  91   1              glint_site_tuble(2, 0x01);
+  92   1              glint_site_tuble(1, 0x01);
+  93   1              glint_site_tuble(0, 0x01);
+  94   1      }
+  95          
+  96          /**
+  97           * @brief 闪烁分钟
+  98           * @param par_glint 闪烁状态
+  99           */
+ 100          void glint_minute(bit par_glint) {
+ 101   1              glint_site_tuble(7, 0x01);
+ 102   1              glint_site_tuble(6, 0x01);
+ 103   1              glint_site_tuble(5, 0x01);
+ 104   1              glint_site_tuble(4, par_glint);
+ 105   1              glint_site_tuble(3, par_glint);
+ 106   1              glint_site_tuble(2, 0x01);
+ 107   1              glint_site_tuble(1, 0x01);
+ 108   1              glint_site_tuble(0, 0x01);
+ 109   1      }
+ 110          
+ 111          /**
+ 112           * @brief 闪烁年
+ 113           * @param par_glint 
+ 114           */
+ 115          void glint_year(bit par_glint) {
+ 116   1              glint_site_tuble(7, par_glint);
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/09/2022 22:17:19 PAGE 3   
+
+ 117   1              glint_site_tuble(6, par_glint);
+ 118   1              glint_site_tuble(5, par_glint);
+ 119   1              glint_site_tuble(4, par_glint);
+ 120   1              glint_site_tuble(3, 0x01);
+ 121   1              glint_site_tuble(2, 0x01);
+ 122   1              glint_site_tuble(1, 0x01);
+ 123   1              glint_site_tuble(0, 0x01);
+ 124   1      }
+ 125          
+ 126          /**
+ 127           * @brief 闪烁月
+ 128           * @param par_glint 
+ 129           */
+ 130          void glint_month(bit par_glint) {
+ 131   1              glint_site_tuble(7, 0x01);
+ 132   1              glint_site_tuble(6, 0x01);
+ 133   1              glint_site_tuble(5, 0x01);
+ 134   1              glint_site_tuble(4, 0x01);
+ 135   1              glint_site_tuble(3, par_glint);
+ 136   1              glint_site_tuble(2, par_glint);
+ 137   1              glint_site_tuble(1, 0x01);
+ 138   1              glint_site_tuble(0, 0x01);
+ 139   1      }
+ 140          
+ 141          /**
+ 142           * @brief 闪烁日
+ 143           * @param par_glint 
+ 144           */
+ 145          void glint_day(bit par_glint) {
+ 146   1              glint_site_tuble(7, 0x01);
+ 147   1              glint_site_tuble(6, 0x01);
+ 148   1              glint_site_tuble(5, 0x01);
+ 149   1              glint_site_tuble(4, 0x01);
+ 150   1              glint_site_tuble(3, 0x01);
+ 151   1              glint_site_tuble(2, 0x01);
+ 152   1              glint_site_tuble(1, par_glint);
+ 153   1              glint_site_tuble(0, par_glint);
+ 154   1      }
+ 155          
+ 156          /**
+ 157           * @brief 修改小时的值
+ 158           * @param par_hour 小时值
+ 159           */
+ 160          void updata_hour(int8 par_hour) {
+ 161   1              hour += par_hour;
+ 162   1              if(hour > 23) {
+ 163   2                      hour = 0;
+ 164   2              }
+ 165   1              else if(hour < 0) {
+ 166   2                      hour = 23;
+ 167   2              }
+ 168   1              second = 0;
+ 169   1              updata_time();
+ 170   1      }
+ 171          
+ 172          /**
+ 173           * @brief 修改小时的值
+ 174           * @param par_minute 小时值
+ 175           */
+ 176          void updata_minute(int8 par_minute) {
+ 177   1              minute += par_minute;
+ 178   1              if(minute > 59) {
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/09/2022 22:17:19 PAGE 4   
+
+ 179   2                      minute = 0;
+ 180   2                      hour++;
+ 181   2                      if(hour > 23) {
+ 182   3                              hour = 0;
+ 183   3                      }
+ 184   2              }
+ 185   1              else if(minute < 0) {
+ 186   2                      minute = 59;
+ 187   2                      hour--;
+ 188   2              }
+ 189   1              second = 0;
+ 190   1              updata_time();
+ 191   1      }
+ 192          
+ 193          /**
+ 194           * @brief 修改年
+ 195           * @param par_year 年值
+ 196           */
+ 197          void updata_year(int8 par_year) {
+ 198   1              year += par_year;
+ 199   1              if(year > 9999) {
+ 200   2                      year = 0;
+ 201   2              }
+ 202   1              else if(month < 0) {
+ 203   2                      year = 9999;
+ 204   2              }
+ 205   1              month = 1;
+ 206   1              day = 1;
+ 207   1              updata_date();
+ 208   1      }
+ 209          
+ 210          /**
+ 211           * @brief 修改月
+ 212           * @param par_month 月
+ 213           */
+ 214          void updata_month(int8 par_month) {
+ 215   1              month += par_month;
+ 216   1              if(month > 12) {
+ 217   2                      month = 1;
+ 218   2              }
+ 219   1              else if(month < 1) {
+ 220   2                      month = 12;
+ 221   2              }
+ 222   1              day = 1;
+ 223   1              updata_date();
+ 224   1      }
+ 225          
+ 226          /**
+ 227           * @brief 修改日
+ 228           * @param par_day 日
+ 229           */
+ 230          void updata_day(int8 par_day) {
+ 231   1              day += par_day;
+ 232   1              if(month == 2) {
+ 233   2                      if(day > day_of_month[month-1]+is_leap()) {
+ 234   3                              day = 1;
+ 235   3                      }
+ 236   2                      else if(day < 1) {
+ 237   3                              day = day_of_month[month-1]+is_leap();
+ 238   3                      }
+ 239   2              }
+ 240   1              else {
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/09/2022 22:17:19 PAGE 5   
+
+ 241   2                      if(day > day_of_month[month-1]) {
+ 242   3                              day = 1;
+ 243   3                      }
+ 244   2                      else if(day < 1) {
+ 245   3                              day = day_of_month[month-1];
+ 246   3                      }
+ 247   2              }
+ 248   1              
+ 249   1              updata_date();
+ 250   1      }
+ 251          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1168    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     19    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2       5
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

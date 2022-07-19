@@ -1,0 +1,207 @@
+C51 COMPILER V9.59.0.0   INTERRUPTS                                                        06/13/2022 20:20:00 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE INTERRUPTS
+OBJECT MODULE PLACED IN .\Objects\interrupts.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\module\interrupts.c OPTIMIZE(8,SPEED) B
+                    -ROWSE INCDIR(..\..\source;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\interrupts.lst) OBJECT(.\Objects\inte
+                    -rrupts.obj)
+
+line level    source
+
+   1          #include "interrupts.h"
+   2          #include <reg52.h>
+   3          
+   4          /**
+   5           * IE – 中断允许控制寄存器
+   6           * IP – 中断优先级控制寄存器
+   7           * TMOD – 定时器工作方式寄存器
+   8           * TCON – 定时器控制寄存器
+   9           * SCON – 串口控制寄存器
+  10           * THx/TLx – 定时器初值寄存器
+  11           * EA 全局中断允许位,当此位是1时中断可用。（重要）
+  12           * ET2 定时器/计数器2中断允许位
+  13           * ES 串口中断允许位
+  14           * ET1 定时器/计数器1中断允许位
+  15           * EX1 外部中断1允许位
+  16           * ET0 定时器/计数器0中断允许位 （重要）
+  17           * EX0 外部中断0允许位
+  18           */
+  19          
+  20          /**
+  21           * @brief TMOD
+  22           * GATE 定时器/计数器的开关控制选项：定时器/计数器的开关控制仅由TCON寄存器�
+             -�的TRx(x = 0,1)控制
+  23           * C/T 定时器模式和计数器模式选择位,将该位置0则为定时器模式
+  24           * M1M0 设置定时器/计数器工作方式：
+  25           * 模式0,13位计数(00) 模式1,16位计数,常用此模式(00) 
+  26           * 模式2,8位初值自动重装(00) 模式3,仅适用于T0,分为两个8位计数器,T1停止计数(00)
+  27           * 
+  28           */
+  29          
+  30          /**
+  31           * @brief TCON
+  32           * TF1 定时器1溢出标志位
+  33           * TR1 定时器1运行控制位,将该位置1时启动定时器1
+  34           * TF0 定时器0溢出标志位
+  35           * TR0 定时器0运行控制位,将该位置1时启动定时器0 （重要）
+  36           * IE1 外部中断1请求标志
+  37           * IT1 外部中断1触发方式选择位
+  38           * IE0 外部中断0请求标志
+  39           * IT0 外部中断0触发方式选择位
+  40           */
+  41          
+  42          /**
+  43           * @brief THx/TLx
+  44           * TH0与TL0组成了一个16位的计数器
+  45           * 执行一条指令的时间是12×(1/12M) s,即计数器每1us加一
+  46           * 
+  47           */
+  48          
+  49          /**
+  50           * @brief INT0中断：如果产生中断则IE = 1
+  51           * @param par_moder 中断方式：0低电平 1下降延
+  52           */
+C51 COMPILER V9.59.0.0   INTERRUPTS                                                        06/13/2022 20:20:00 PAGE 2   
+
+  53          void init_int0_interrupt(uint8 par_moder) {
+  54   1          IT0 = par_moder; // 0低电平 1下降延
+  55   1          EX0 = 1; // 外部中断0中断
+  56   1          EA = 1;
+  57   1      }
+  58          
+  59          /**
+  60           * @brief INT1中断：如果产生中断则IE = 1
+  61           * @param par_moder 中断方式：0低电平 1下降延
+  62           */
+  63          void init_int1_interrupt(uint8 par_moder) {
+  64   1          IT1 = par_moder; // 0低电平 1下降延
+  65   1          EX1 = 1; // 外部中断0中断
+  66   1          EA = 1;
+  67   1      }
+  68          
+  69          /**
+  70           * @brief T0中断：0方式 0xB8, 0x00 2.5ms
+  71           * @param par_h 中断时间高位
+  72           * @param par_l 中断时间低位
+  73           */
+  74          void init_t0_0_interrupt(uint8 par_h, uint8 par_l) {
+  75   1          TMOD &= 0xF0; // 低四位清0
+  76   1          TMOD |= 0x00; // 设置模式
+  77   1          TH0 = par_h;
+  78   1          TL0 = par_l;
+  79   1          EA = 1; // 总中断开关
+  80   1          ET0 = 1; // T0中断开关
+  81   1          TR0 = 1; // 开始计时
+  82   1      }
+  83          
+  84          /**
+  85           * @brief T0中断：1方式 0xF7, 0x00 2.5ms
+  86           * @param par_h 中断时间高位
+  87           * @param par_l 中断时间低位
+  88           */
+  89          void init_t0_1_interrupt(uint8 par_h, uint8 par_l) {
+  90   1          TMOD &= 0xF0; // 低四位清0
+  91   1          TMOD |= 0x01; // 设置模式
+  92   1          TH0 = par_h;
+  93   1          TL0 = par_l;
+  94   1          EA = 1; // 总中断开关
+  95   1          ET0 = 1; // T0中断开关
+  96   1          TR0 = 1; // 开始计时
+  97   1      }
+  98          
+  99          /**
+ 100           * @brief T0中断：2方式 0xB8, 0xB8 2.5/32ms
+ 101           * @param par_h 中断时间高位
+ 102           * @param par_l 中断时间低位
+ 103           */
+ 104          void init_t0_2_interrupt(uint8 par_h, uint8 par_l) {
+ 105   1          TMOD &= 0xF0; // 低四位清0
+ 106   1          TMOD |= 0x02; // 设置模式
+ 107   1          TH0 = par_h;
+ 108   1          TL0 = par_l;
+ 109   1          EA = 1; // 总中断开关
+ 110   1          ET0 = 1; // T0中断开关
+ 111   1          TR0 = 1; // 开始计时
+ 112   1      }
+ 113          
+ 114          /**
+C51 COMPILER V9.59.0.0   INTERRUPTS                                                        06/13/2022 20:20:00 PAGE 3   
+
+ 115           * @brief T0中断：3方式 0xB8, 0xB8 2.5/32ms 此时T1只能做串行通信的波特率,且工作模式
+             -为0,1,2,3
+ 116           * 重置 T0 TL0 T1 TH0
+ 117           * @param par_h 中断时间高位
+ 118           * @param par_l 中断时间低位
+ 119           */
+ 120          void init_t0_3_interrupt(uint8 par_h, uint8 par_l) {
+ 121   1          TMOD &= 0xF0; // 低四位清0
+ 122   1          TMOD |= 0x03; // 设置模式
+ 123   1          TH0 = par_h;
+ 124   1          TL0 = par_l;
+ 125   1          EA = 1; // 总中断开关
+ 126   1          ET0 = 1; // T0中断开关
+ 127   1          TR0 = 1; // 开始计时
+ 128   1          TR1=1;       //启动定时器0的高8位计数器
+ 129   1      }
+ 130          
+ 131          /**
+ 132           * @brief T0中断：0方式 0xB8, 0x00 2.5ms
+ 133           * @param par_h 中断时间高位
+ 134           * @param par_l 中断时间低位
+ 135           */
+ 136          void init_t1_0_interrupt(uint8 par_h, uint8 par_l) {
+ 137   1          TMOD &= 0x0F; // 高四位清0
+ 138   1          TMOD |= 0x00; // 设置模式
+ 139   1          TH1 = par_h;
+ 140   1          TL1 = par_l;
+ 141   1          EA = 1; // 总中断开关
+ 142   1          ET1 = 1; // T1中断开关
+ 143   1          TR1 = 1; // 开始计时
+ 144   1      }
+ 145          
+ 146          /**
+ 147           * @brief T1中断：1方式 0xF7, 0x00 2.5ms
+ 148           * @param par_h 中断时间高位
+ 149           * @param par_l 中断时间低位
+ 150           */
+ 151          void init_t1_1_interrupt(uint8 par_h, uint8 par_l) {
+ 152   1          TMOD &= 0x0F; // 高四位清0
+ 153   1          TMOD |= 0x10; // 设置模式
+ 154   1          TH1 = par_h;
+ 155   1          TL1 = par_l;
+ 156   1          EA = 1; // 总中断开关
+ 157   1          ET1 = 1; // T0中断开关
+ 158   1          TR1 = 1; // 开始计时
+ 159   1      }
+ 160          
+ 161          /**
+ 162           * @brief T1中断：2方式 0xB8, 0xB8 2.5/32ms
+ 163           * @param par_h 中断时间高位
+ 164           * @param par_l 中断时间低位
+ 165           */
+ 166          void init_t1_2_interrupt(uint8 par_h, uint8 par_l) {
+ 167   1          TMOD &= 0x0F; // 高四位清0
+ 168   1          TMOD |= 0x20; // 设置模式
+ 169   1          TH1 = par_h;
+ 170   1          TL1 = par_l;
+ 171   1          EA = 1; // 总中断开关
+ 172   1          ET1 = 1; // T0中断开关
+ 173   1          TR1 = 1; // 开始计时
+ 174   1      }
+
+C51 COMPILER V9.59.0.0   INTERRUPTS                                                        06/13/2022 20:20:00 PAGE 4   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    135    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

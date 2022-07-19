@@ -1,0 +1,29 @@
+C51 COMPILER V9.59.0.0   PLAYER                                                            06/13/2022 20:20:00 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PLAYER
+OBJECT MODULE PLACED IN .\Objects\player.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE player.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\sourc
+                    -e;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\player.lst) OBJECT(.\Objects\player.obj)
+
+line level    source
+
+   1          #include "player.h"
+   2          
+   3          void display_player() {
+   4   1              
+   5   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      1    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,280 @@
+C51 COMPILER V9.59.0.0   CALCULATOR                                                        06/13/2022 12:00:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CALCULATOR
+OBJECT MODULE PLACED IN .\Objects\calculator.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE calculator.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\s
+                    -ource;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\calculator.lst) OBJECT(.\Objects\calculator.obj)
+
+line level    source
+
+   1          #include "calculator.h"
+   2          #include "keyboard.h"
+   3          
+   4          /*操作数*/
+   5          uint32 operator_a = 0, operator_b = 0; // 运算结果 输入数值
+   6          
+   7          /*操作符*/
+   8          uint8 operator_cn = '\0', operator_co = '+' ; // 记录当前的运算符状态
+   9          
+  10          /*系统状态*/
+  11          uint8 system_state = 0;
+  12          bit sym_display_ab = 0; // a(0) b(1)
+  13          bit sym_is_operate = 1; // 判断是否生效上一次计算
+  14          bit sym_equal = 0;
+  15          
+  16          /**
+  17           * @brief 运算
+  18           * @return uint8 返回计算状态
+  19           */
+  20          uint8 operate_calculator() {
+  21   1              switch(operator_co) {
+  22   2                      case '+':
+  23   2                              operator_a = operator_a+operator_b;
+  24   2                              break;
+  25   2                      case '-':
+  26   2                              operator_a = operator_a-operator_b;
+  27   2                              break;
+  28   2                      case '*':
+  29   2                              operator_a = operator_a*operator_b;
+  30   2                              break;
+  31   2                      case '/':
+  32   2                              if(!operator_b) return 0; // 分母为0则要做异常处理
+  33   2                              operator_a = operator_a/operator_b;
+  34   2                              break;
+  35   2              }
+  36   1              operator_b = 0;
+  37   1              return 1;
+  38   1      }
+  39          
+  40          /**
+  41           * @brief 键盘尾部加入
+  42           * @param par_header 前端值
+  43           * @param par_tail 尾部值
+  44           * @return uint32 结果
+  45           */
+  46          uint32 push_calculator(uint32 par_header, uint32 par_tail) {
+  47   1              uint32 tmp_tail = par_tail;
+  48   1              do {
+  49   2              par_header *= 10;
+  50   2              tmp_tail /= 10;
+  51   2          }while(tmp_tail > 0);
+  52   1          return (par_header+par_tail)%100000000;
+  53   1      }
+  54          
+C51 COMPILER V9.59.0.0   CALCULATOR                                                        06/13/2022 12:00:13 PAGE 2   
+
+  55          /**
+  56           * @brief 键盘尾部移除
+  57           * @param par_header 移出的值
+  58           * @param par_bite 移出的位数
+  59           * @return uint32 结果
+  60           */
+  61          uint32 pop_calculator(uint32 par_header, uint8 par_bite) {
+  62   1              while(par_bite > 0) {
+  63   2                      par_bite--;
+  64   2                      par_header /= 10;
+  65   2              }
+  66   1              return par_header;
+  67   1      }
+  68          
+  69          /**
+  70           * @brief 键盘检测效应
+  71           */
+  72          void keyboard_calculator() {
+  73   1      
+  74   1              /*数字键*/
+  75   1              if(KEYBOARD9_DOWN) {
+  76   2                      KEYBOARD9_DOWN = 0;
+  77   2                      if(sym_equal) {
+  78   3                              operator_a = 0;
+  79   3                      }
+  80   2                      sym_display_ab = 1;
+  81   2                      sym_is_operate = 1;
+  82   2                      sym_equal = 0;
+  83   2                      operator_b = push_calculator(operator_b, 1);
+  84   2              }
+  85   1              if(KEYBOARD10_DOWN) {
+  86   2                      KEYBOARD10_DOWN = 0;
+  87   2                      if(sym_equal) {
+  88   3                              operator_a = 0;
+  89   3                      }
+  90   2                      sym_display_ab = 1;
+  91   2                      sym_is_operate = 1;
+  92   2                      sym_equal = 0;
+  93   2                      operator_b = push_calculator(operator_b, 2);
+  94   2              }
+  95   1              if(KEYBOARD11_DOWN) {
+  96   2                      KEYBOARD11_DOWN = 0;
+  97   2                      if(sym_equal) {
+  98   3                              operator_a = 0;
+  99   3                      }
+ 100   2                      sym_display_ab = 1;
+ 101   2                      sym_is_operate = 1;
+ 102   2                      sym_equal = 0;
+ 103   2                      operator_b = push_calculator(operator_b, 3);
+ 104   2              }
+ 105   1              if(KEYBOARD5_DOWN) {
+ 106   2                      KEYBOARD5_DOWN = 0;
+ 107   2                      if(sym_equal) {
+ 108   3                              operator_a = 0;
+ 109   3                      }
+ 110   2                      sym_display_ab = 1;
+ 111   2                      sym_is_operate = 1;
+ 112   2                      sym_equal = 0;
+ 113   2                      operator_b = push_calculator(operator_b, 4);
+ 114   2              }
+ 115   1              if(KEYBOARD6_DOWN) {
+ 116   2                      KEYBOARD6_DOWN = 0;
+C51 COMPILER V9.59.0.0   CALCULATOR                                                        06/13/2022 12:00:13 PAGE 3   
+
+ 117   2                      if(sym_equal) {
+ 118   3                              operator_a = 0;
+ 119   3                      }
+ 120   2                      sym_display_ab = 1;
+ 121   2                      sym_is_operate = 1;
+ 122   2                      sym_equal = 0;
+ 123   2                      operator_b = push_calculator(operator_b, 5);
+ 124   2              }
+ 125   1              if(KEYBOARD7_DOWN) {
+ 126   2                      KEYBOARD7_DOWN = 0;
+ 127   2                      if(sym_equal) {
+ 128   3                              operator_a = 0;
+ 129   3                      }
+ 130   2                      sym_display_ab = 1;
+ 131   2                      sym_is_operate = 1;
+ 132   2                      sym_equal = 0;
+ 133   2                      operator_b = push_calculator(operator_b, 6);
+ 134   2              }
+ 135   1              if(KEYBOARD1_DOWN) {
+ 136   2                      KEYBOARD1_DOWN = 0;
+ 137   2                      if(sym_equal) {
+ 138   3                              operator_a = 0;
+ 139   3                      }
+ 140   2                      sym_display_ab = 1;
+ 141   2                      sym_is_operate = 1;
+ 142   2                      sym_equal = 0;
+ 143   2                      operator_b = push_calculator(operator_b, 7);
+ 144   2              }
+ 145   1              if(KEYBOARD2_DOWN) {
+ 146   2                      KEYBOARD2_DOWN = 0;
+ 147   2                      if(sym_equal) {
+ 148   3                              operator_a = 0;
+ 149   3                      }
+ 150   2                      sym_display_ab = 1;
+ 151   2                      sym_is_operate = 1;
+ 152   2                      sym_equal = 0;
+ 153   2                      operator_b = push_calculator(operator_b, 8);
+ 154   2              }
+ 155   1              if(KEYBOARD3_DOWN) {
+ 156   2                      KEYBOARD3_DOWN = 0;
+ 157   2                      if(sym_equal) {
+ 158   3                              operator_a = 0;
+ 159   3                      }
+ 160   2                      sym_display_ab = 1;
+ 161   2                      sym_is_operate = 1;
+ 162   2                      sym_equal = 0;
+ 163   2                      operator_b = push_calculator(operator_b, 9);
+ 164   2              }
+ 165   1              if(KEYBOARD14_DOWN) {
+ 166   2                      KEYBOARD14_DOWN = 0;
+ 167   2                      if(sym_equal) {
+ 168   3                              operator_a = 0;
+ 169   3                      }
+ 170   2                      sym_display_ab = 1;
+ 171   2                      sym_is_operate = 1;
+ 172   2                      sym_equal = 0;
+ 173   2                      operator_b = push_calculator(operator_b, 0);
+ 174   2              }
+ 175   1      
+ 176   1              /*运算键*/
+ 177   1              if(KEYBOARD4_DOWN) {
+ 178   2                      KEYBOARD4_DOWN = 0;
+C51 COMPILER V9.59.0.0   CALCULATOR                                                        06/13/2022 12:00:13 PAGE 4   
+
+ 179   2                      operator_cn = '+';
+ 180   2                      if(sym_is_operate) {
+ 181   3                              operate_calculator();
+ 182   3                              sym_is_operate = 0;
+ 183   3                              sym_display_ab = 0;
+ 184   3                      }
+ 185   2                      sym_equal = 0;
+ 186   2                      operator_co = operator_cn;
+ 187   2              }
+ 188   1              if(KEYBOARD8_DOWN) {
+ 189   2                      KEYBOARD8_DOWN = 0;
+ 190   2                      operator_cn = '-';
+ 191   2                      if(sym_is_operate) {
+ 192   3                              operate_calculator();
+ 193   3                              sym_is_operate = 0;
+ 194   3                              sym_display_ab = 0;
+ 195   3                      }
+ 196   2                      sym_equal = 0;
+ 197   2                      operator_co = operator_cn;
+ 198   2              }
+ 199   1              if(KEYBOARD12_DOWN) {
+ 200   2                      KEYBOARD12_DOWN = 0;
+ 201   2                      operator_cn = '*';
+ 202   2                      if(sym_is_operate) {
+ 203   3                              operate_calculator();
+ 204   3                              sym_is_operate = 0;
+ 205   3                              sym_display_ab = 0;
+ 206   3                      }
+ 207   2                      sym_equal = 0;
+ 208   2                      operator_co = operator_cn;
+ 209   2              }
+ 210   1              if(KEYBOARD16_DOWN) {
+ 211   2                      KEYBOARD16_DOWN = 0;
+ 212   2                      operator_cn = '/';
+ 213   2                      if(sym_is_operate) {
+ 214   3                              operate_calculator();
+ 215   3                              sym_is_operate = 0;
+ 216   3                              sym_display_ab = 0;
+ 217   3                      }
+ 218   2                      sym_equal = 0;
+ 219   2                      operator_co = operator_cn;
+ 220   2              }
+ 221   1      
+ 222   1              /*等于键*/
+ 223   1              if(KEYBOARD15_DOWN) {
+ 224   2                      KEYBOARD15_DOWN = 0;
+ 225   2                      operate_calculator();
+ 226   2                      sym_is_operate = 0;
+ 227   2                      sym_display_ab = 0;
+ 228   2                      sym_equal = 1;
+ 229   2                      operator_cn = '\0';
+ 230   2                      operator_co = '+' ;
+ 231   2              }
+ 232   1      
+ 233   1              /*删除键*/
+ 234   1              if(KEYBOARD13_DOWN) {
+ 235   2                      KEYBOARD13_DOWN = 0;
+ 236   2                      if(sym_is_operate)
+ 237   2                              operator_b = pop_calculator(operator_b, 1);
+ 238   2                      else {
+ 239   3                              operator_a = 0;
+ 240   3                              operator_b = 0;
+C51 COMPILER V9.59.0.0   CALCULATOR                                                        06/13/2022 12:00:13 PAGE 5   
+
+ 241   3                              operator_cn = '\0';
+ 242   3                              operator_co = '+' ;
+ 243   3                              sym_display_ab = 0;
+ 244   3                              sym_is_operate = 1;
+ 245   3                              sym_equal = 0;
+ 246   3                      }
+ 247   2              }
+ 248   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    892    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11      17
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

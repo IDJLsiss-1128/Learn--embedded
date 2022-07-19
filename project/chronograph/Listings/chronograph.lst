@@ -1,0 +1,150 @@
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 18:12:50 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CHRONOGRAPH
+OBJECT MODULE PLACED IN .\Objects\chronograph.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE chronograph.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\
+                    -source\module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\chronograph.lst) OBJECT(.\Objects\chronograph.obj)
+
+line level    source
+
+   1          #include "chronograph.h"
+   2          #include "tuble.h"
+   3          #include "keyboard.h"
+   4          
+   5          bit sym_run = 0, // 计时与暂停
+   6                  sym_cord = 0; // 计时与记录
+   7          uint8 cord_count = 0, cord_count_free = 0; // 记录游标
+   8          uint32 chronograph_count = 0,  // 正常计时
+   9                  chronograph_cord_count = 0; // 当前记录
+  10          uint32 chronograph_cord[10] = {0,0,0,0,0,0,0,0,0,0};
+  11          
+  12          /**
+  13           * @brief 初始计时器
+  14           */
+  15          void init_chronograph() {
+  16   1              display_point_site_tuble(1);
+  17   1              updata_value_site_tuble(0,0);
+  18   1              updata_value_site_tuble(1,0);
+  19   1      }
+  20          
+  21          /**
+  22           * @brief 更新计时时间
+  23           */
+  24          void updata_chronograph() {
+  25   1              if(sym_run) {
+  26   2                      chronograph_count++;
+  27   2                      if(chronograph_count >= 10) sym_zore = 0;
+  28   2              }
+  29   1              if(sym_cord) {
+  30   2                      updata_value_all_tuble(chronograph_cord_count, 10);
+  31   2                      if(!chronograph_cord_count) updata_value_site_tuble(1,0);
+  32   2              } // 显示记录
+  33   1              else {
+  34   2                      updata_value_all_tuble(chronograph_count, 10);
+  35   2                      if(!(chronograph_count/10)) updata_value_site_tuble(1,0);
+  36   2              } // 显示计时
+  37   1              display_point_site_tuble(1);
+  38   1              chronograph_count %= 10000000;
+  39   1      }
+  40          
+  41          /**
+  42           * @brief 键盘检测效应
+  43           */
+  44          void keyboard_chronograph() {
+  45   1              if(KEYBOARD4_DOWN) {
+  46   2                      KEYBOARD4_DOWN = 0;
+  47   2                      cord_count_free++;
+  48   2                      look_cord_chronograph();
+  49   2                      if(cord_count_free >= 10) cord_count_free = 0;
+  50   2              }
+  51   1              if(KEYBOARD8_DOWN) {
+  52   2                      KEYBOARD8_DOWN = 0;
+  53   2                      cord_count_free--;
+  54   2                      look_cord_chronograph();
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 18:12:50 PAGE 2   
+
+  55   2                      if(cord_count_free >= 10) cord_count_free = 9;
+  56   2              }
+  57   1              if(KEYBOARD12_DOWN) {
+  58   2                      KEYBOARD12_DOWN = 0;
+  59   2                      if((cord_count < 10) && (chronograph_cord[cord_count] == 0)) {
+  60   3                              chronograph_cord[cord_count++] = chronograph_count;
+  61   3                      } // 将当前时间记录到数组
+  62   2              }
+  63   1              if(KEYBOARD13_DOWN) {
+  64   2                      KEYBOARD13_DOWN = 0;
+  65   2                      chronograph_count = 0;
+  66   2                      sym_zore = 1;
+  67   2                      sym_run = 0;
+  68   2              }
+  69   1              if(KEYBOARD15_DOWN) {
+  70   2                      KEYBOARD15_DOWN = 0;
+  71   2                      sym_run = !sym_run;
+  72   2              }
+  73   1              if(KEYBOARD16_DOWN) {
+  74   2                      KEYBOARD16_DOWN = 0;
+  75   2                      sym_cord = !sym_cord;
+  76   2                      look_cord_chronograph();
+  77   2              }
+  78   1              /*防止与其它程序的按键反应冲突*/
+  79   1              if(KEYBOARD1_DOWN) {
+  80   2                      KEYBOARD1_DOWN = 0;
+  81   2              }
+  82   1              if(KEYBOARD2_DOWN) {
+  83   2                      KEYBOARD2_DOWN = 0;
+  84   2              }
+  85   1              if(KEYBOARD3_DOWN) {
+  86   2                      KEYBOARD3_DOWN = 0;
+  87   2              }
+  88   1              
+  89   1              if(KEYBOARD5_DOWN) {
+  90   2                      KEYBOARD5_DOWN = 0;
+  91   2              }
+  92   1              if(KEYBOARD6_DOWN) {
+  93   2                      KEYBOARD6_DOWN = 0;
+  94   2              }
+  95   1              if(KEYBOARD7_DOWN) {
+  96   2                      KEYBOARD7_DOWN = 0;
+  97   2              }
+  98   1              
+  99   1              if(KEYBOARD9_DOWN) {
+ 100   2                      KEYBOARD9_DOWN = 0;
+ 101   2              }
+ 102   1              if(KEYBOARD10_DOWN) {
+ 103   2                      KEYBOARD10_DOWN = 0;
+ 104   2              }
+ 105   1              if(KEYBOARD11_DOWN) {
+ 106   2                      KEYBOARD11_DOWN = 0;
+ 107   2              }
+ 108   1              if(KEYBOARD14_DOWN) {
+ 109   2                      KEYBOARD14_DOWN = 0;
+ 110   2              }
+ 111   1              if(KEYBOARD16_DOWN) {
+ 112   2                      KEYBOARD16_DOWN = 0;
+ 113   2              }
+ 114   1      }
+ 115          
+ 116          /**
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 18:12:50 PAGE 3   
+
+ 117           * @brief 查看记录
+ 118           */
+ 119          void look_cord_chronograph() {
+ 120   1              display_point_site_tuble(1);
+ 121   1              chronograph_cord_count = chronograph_cord[cord_count_free%10];
+ 122   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    414    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     50    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

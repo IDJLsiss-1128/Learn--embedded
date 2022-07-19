@@ -1,0 +1,441 @@
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CLOCK
+OBJECT MODULE PLACED IN .\Objects\clock.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\clock.c OPTIMIZE(8,SPEED) BROWSE INCDIR
+                    -(..\..\source\module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\clock.lst) OBJECT(.\Objects\clock.obj)
+
+line level    source
+
+   1          #include "clock.h"
+   2          #include "tuble.h"
+   3          #include "keyboard.h"
+   4          
+   5          bit sym_data_time = 0, 
+   6                  sym_data_date = 0,
+   7                  sym_updata_state = 1,
+   8                  sym_state_glint = 0,
+   9                  sym_glint = 0
+  10                  ;
+  11                  
+  12          int16 year = 2020;
+  13          int8 month = 1, day = 1, hour = 0, minute = 0, second = 0;
+  14          uint8 state_time = 0,
+  15                  glint_count_10s = 10,
+  16                  time_glint_state = 0
+  17                  ;
+  18          
+  19          uint8 day_of_month[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+  20          
+  21          uint8 is_leap() {
+  22   1              if(year%4 == 0) {
+  23   2                      if(year%100 == 0 && year%400 != 0) {
+  24   3                              return 0;
+  25   3                      }
+  26   2                      return 1;
+  27   2              }
+  28   1              return 0;
+  29   1      }
+  30          
+  31          
+  32          void updata_total_time() {
+  33   1              second++;
+  34   1              sym_data_time = 1;
+  35   1              if(second > 59) {
+  36   2                      second = 0;
+  37   2                      minute++;
+  38   2                      if(minute > 59) {
+  39   3                              minute = 0;
+  40   3                              hour++;
+  41   3                              if(hour > 23) {
+  42   4                                      hour = 0;
+  43   4                                      sym_data_date = 1;
+  44   4                                      day++;
+  45   4                                      if(day > day_of_month[(month-1)%12]+is_leap()) {
+  46   5                                              day = 1;
+  47   5                                              month++;
+  48   5                                              if(month > 12) {
+  49   6                                                      month = 1;
+  50   6                                                      year++;
+  51   6                                              }
+  52   5                                      }
+  53   4                              }
+  54   3                      }
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 2   
+
+  55   2              }
+  56   1      
+  57   1      }
+  58          
+  59          
+  60          void updata_time() {
+  61   1              /*更新时*/
+  62   1              updata_value_site_tuble(7, hour/10%10);
+  63   1              updata_value_site_tuble(6, hour/1%10);
+  64   1              
+  65   1              updata_value_site_tuble(5, 16);
+  66   1              /*更新分*/
+  67   1              updata_value_site_tuble(4, minute/10%10);
+  68   1              updata_value_site_tuble(3, minute/1%10);
+  69   1      
+  70   1              updata_value_site_tuble(2, 16);
+  71   1              /*更新秒*/
+  72   1              updata_value_site_tuble(1, second/10%10);
+  73   1              updata_value_site_tuble(0, second/1%10);
+  74   1      }
+  75          
+  76          void updata_date() {
+  77   1              /*更新年*/
+  78   1              updata_value_site_tuble(7, year/1000%10);
+  79   1              updata_value_site_tuble(6, year/100%10);
+  80   1              updata_value_site_tuble(5, year/10%10);
+  81   1              updata_value_site_tuble(4, year/1%10);
+  82   1      
+  83   1              /*更新月*/
+  84   1              updata_value_site_tuble(3, month/10%10);
+  85   1              updata_value_site_tuble(2, month/1%10);
+  86   1      
+  87   1              /*更新日*/
+  88   1              updata_value_site_tuble(1, day/10%10);
+  89   1              updata_value_site_tuble(0, day/1%10);
+  90   1      }
+  91          
+  92          /**
+  93           * @brief 闪烁小时
+  94           * @param par_glint 闪烁状态
+  95           */
+  96          void glint_hour(bit par_glint) {
+  97   1              glint_site_tuble(7, par_glint);
+  98   1              glint_site_tuble(6, par_glint);
+  99   1              glint_site_tuble(5, 0x01);
+ 100   1              glint_site_tuble(4, 0x01);
+ 101   1              glint_site_tuble(3, 0x01);
+ 102   1              glint_site_tuble(2, 0x01);
+ 103   1              glint_site_tuble(1, 0x01);
+ 104   1              glint_site_tuble(0, 0x01);
+ 105   1      }
+ 106          
+ 107          /**
+ 108           * @brief 闪烁分钟
+ 109           * @param par_glint 闪烁状态
+ 110           */
+ 111          void glint_minute(bit par_glint) {
+ 112   1              glint_site_tuble(7, 0x01);
+ 113   1              glint_site_tuble(6, 0x01);
+ 114   1              glint_site_tuble(5, 0x01);
+ 115   1              glint_site_tuble(4, par_glint);
+ 116   1              glint_site_tuble(3, par_glint);
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 3   
+
+ 117   1              glint_site_tuble(2, 0x01);
+ 118   1              glint_site_tuble(1, 0x01);
+ 119   1              glint_site_tuble(0, 0x01);
+ 120   1      }
+ 121          
+ 122          /**
+ 123           * @brief 闪烁年
+ 124           * @param par_glint 
+ 125           */
+ 126          void glint_year(bit par_glint) {
+ 127   1              glint_site_tuble(7, par_glint);
+ 128   1              glint_site_tuble(6, par_glint);
+ 129   1              glint_site_tuble(5, par_glint);
+ 130   1              glint_site_tuble(4, par_glint);
+ 131   1              glint_site_tuble(3, 0x01);
+ 132   1              glint_site_tuble(2, 0x01);
+ 133   1              glint_site_tuble(1, 0x01);
+ 134   1              glint_site_tuble(0, 0x01);
+ 135   1      }
+ 136          
+ 137          /**
+ 138           * @brief 闪烁月
+ 139           * @param par_glint 
+ 140           */
+ 141          void glint_month(bit par_glint) {
+ 142   1              glint_site_tuble(7, 0x01);
+ 143   1              glint_site_tuble(6, 0x01);
+ 144   1              glint_site_tuble(5, 0x01);
+ 145   1              glint_site_tuble(4, 0x01);
+ 146   1              glint_site_tuble(3, par_glint);
+ 147   1              glint_site_tuble(2, par_glint);
+ 148   1              glint_site_tuble(1, 0x01);
+ 149   1              glint_site_tuble(0, 0x01);
+ 150   1      }
+ 151          
+ 152          /**
+ 153           * @brief 闪烁日
+ 154           * @param par_glint 
+ 155           */
+ 156          void glint_day(bit par_glint) {
+ 157   1              glint_site_tuble(7, 0x01);
+ 158   1              glint_site_tuble(6, 0x01);
+ 159   1              glint_site_tuble(5, 0x01);
+ 160   1              glint_site_tuble(4, 0x01);
+ 161   1              glint_site_tuble(3, 0x01);
+ 162   1              glint_site_tuble(2, 0x01);
+ 163   1              glint_site_tuble(1, par_glint);
+ 164   1              glint_site_tuble(0, par_glint);
+ 165   1      }
+ 166          
+ 167          /**
+ 168           * @brief 修改小时的值
+ 169           * @param par_hour 小时值
+ 170           */
+ 171          void updata_hour(int8 par_hour) {
+ 172   1              hour += par_hour;
+ 173   1              if(hour > 23) {
+ 174   2                      hour = 0;
+ 175   2              }
+ 176   1              else if(hour < 0) {
+ 177   2                      hour = 23;
+ 178   2              }
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 4   
+
+ 179   1              second = 0;
+ 180   1              updata_time();
+ 181   1      }
+ 182          
+ 183          /**
+ 184           * @brief 修改小时的值
+ 185           * @param par_minute 小时值
+ 186           */
+ 187          void updata_minute(int8 par_minute) {
+ 188   1              minute += par_minute;
+ 189   1              if(minute > 59) {
+ 190   2                      minute = 0;
+ 191   2                      hour++;
+ 192   2                      if(hour > 23) {
+ 193   3                              hour = 0;
+ 194   3                      }
+ 195   2              }
+ 196   1              else if(minute < 0) {
+ 197   2                      minute = 59;
+ 198   2                      hour--;
+ 199   2              }
+ 200   1              second = 0;
+ 201   1              updata_time();
+ 202   1      }
+ 203          
+ 204          /**
+ 205           * @brief 修改年
+ 206           * @param par_year 年值
+ 207           */
+ 208          void updata_year(int8 par_year) {
+ 209   1              year += par_year;
+ 210   1              if(year > 9999) {
+ 211   2                      year = 0;
+ 212   2              }
+ 213   1              else if(month < 0) {
+ 214   2                      year = 9999;
+ 215   2              }
+ 216   1              month = 1;
+ 217   1              day = 1;
+ 218   1              updata_date();
+ 219   1      }
+ 220          
+ 221          /**
+ 222           * @brief 修改月
+ 223           * @param par_month 月
+ 224           */
+ 225          void updata_month(int8 par_month) {
+ 226   1              month += par_month;
+ 227   1              if(month > 12) {
+ 228   2                      month = 1;
+ 229   2              }
+ 230   1              else if(month < 1) {
+ 231   2                      month = 12;
+ 232   2              }
+ 233   1              day = 1;
+ 234   1              updata_date();
+ 235   1      }
+ 236          
+ 237          /**
+ 238           * @brief 修改日
+ 239           * @param par_day 日
+ 240           */
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 5   
+
+ 241          void updata_day(int8 par_day) {
+ 242   1              day += par_day;
+ 243   1              if(month == 2) {
+ 244   2                      if(day > day_of_month[month-1]+is_leap()) {
+ 245   3                              day = 1;
+ 246   3                      }
+ 247   2                      else if(day < 1) {
+ 248   3                              day = day_of_month[month-1]+is_leap();
+ 249   3                      }
+ 250   2              }
+ 251   1              else {
+ 252   2                      if(day > day_of_month[month-1]) {
+ 253   3                              day = 1;
+ 254   3                      }
+ 255   2                      else if(day < 1) {
+ 256   3                              day = day_of_month[month-1];
+ 257   3                      }
+ 258   2              }
+ 259   1              
+ 260   1              updata_date();
+ 261   1      }
+ 262          
+ 263          
+ 264          /**
+ 265           * @brief 键盘检测效应
+ 266           */
+ 267          void keyboard_clock() {
+ 268   1              
+ 269   1              if(KEYBOARD13_DOWN) {
+ 270   2                      KEYBOARD13_DOWN = 0;
+ 271   2                      sym_updata_state = !sym_updata_state; // 更替时间与日期
+ 272   2                      if(sym_updata_state) {
+ 273   3                              glint_hour(0x01);
+ 274   3                              glint_minute(0x01);
+ 275   3                              updata_time();
+ 276   3                      } // 改变时间闪烁状态
+ 277   2                      else {
+ 278   3                              glint_year(0x01);
+ 279   3                              glint_month(0x01);
+ 280   3                              glint_day(0x01);
+ 281   3                              updata_date();
+ 282   3                      } // 改变日期闪烁状态
+ 283   2                      state_time = 0; // 修改状态重置状态
+ 284   2              }
+ 285   1                              
+ 286   1              if(KEYBOARD15_DOWN) {
+ 287   2                      KEYBOARD15_DOWN = 0;
+ 288   2                      sym_state_glint = 1;
+ 289   2                      glint_count_10s = 10;
+ 290   2                      state_time++;
+ 291   2                      if(sym_updata_state) {
+ 292   3                              if(state_time >= 3) {
+ 293   4                                      state_time = 0;
+ 294   4                                      sym_state_glint = 0;
+ 295   4                                      glint_hour(1);
+ 296   4                              }
+ 297   3                      } // 改变时间修改状态
+ 298   2                      else {
+ 299   3                              if(state_time >= 4) {
+ 300   4                                      state_time = 0;
+ 301   4                                      sym_state_glint = 0;
+ 302   4                                      glint_hour(1);
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 6   
+
+ 303   4                              }
+ 304   3                      } // 改变日期修改状态
+ 305   2                      
+ 306   2              } // 时间设置触发 1 时/年 2 分/月 3 月
+ 307   1                      
+ 308   1              if(KEYBOARD4_DOWN) {
+ 309   2                      KEYBOARD4_DOWN = 0;
+ 310   2                      if(sym_state_glint) {
+ 311   3                              glint_count_10s = 10;
+ 312   3                              if(sym_updata_state) {
+ 313   4                                      switch (state_time) {
+ 314   5                                              case 1:
+ 315   5                                                      updata_hour(1);
+ 316   5                                                      break;
+ 317   5                                              case 2:
+ 318   5                                                      updata_minute(1);
+ 319   5                                                      break;
+ 320   5                                      }
+ 321   4                              } // 增加时间状态
+ 322   3                              else {
+ 323   4                                      switch (state_time) {
+ 324   5                                              case 1:
+ 325   5                                                      updata_year(1);
+ 326   5                                                      break;
+ 327   5                                              case 2:
+ 328   5                                                      updata_month(1);
+ 329   5                                                      break;
+ 330   5                                              case 3:
+ 331   5                                                      updata_day(1);
+ 332   5                                                      break;
+ 333   5                                      }
+ 334   4                              } // 增加日期状态
+ 335   3                      }
+ 336   2              } // S4下调数值
+ 337   1      
+ 338   1              if(KEYBOARD8_DOWN) {
+ 339   2                      KEYBOARD8_DOWN = 0;
+ 340   2                      if(sym_state_glint) {
+ 341   3                              glint_count_10s = 10;
+ 342   3                              if(sym_updata_state) {
+ 343   4                                      switch (state_time) {
+ 344   5                                              case 1:
+ 345   5                                                      updata_hour(-1);
+ 346   5                                                      break;
+ 347   5                                              case 2:
+ 348   5                                                      updata_minute(-1);
+ 349   5                                                      break;
+ 350   5                                      }
+ 351   4                              } // 减少时间状态
+ 352   3                              else {
+ 353   4                                      switch (state_time) {
+ 354   5                                              case 1:
+ 355   5                                                      updata_year(-1);
+ 356   5                                                      break;
+ 357   5                                              case 2:
+ 358   5                                                      updata_month(-1);
+ 359   5                                                      break;
+ 360   5                                              case 3:
+ 361   5                                                      updata_day(-1);
+ 362   5                                                      break;
+ 363   5                                      }
+ 364   4                              }  // 减少日期状态
+C51 COMPILER V9.59.0.0   CLOCK                                                             06/15/2022 19:40:22 PAGE 7   
+
+ 365   3                      }
+ 366   2              } // S8下调数值
+ 367   1              
+ 368   1              /*防止与其它程序的按键反应冲突*/
+ 369   1              if(KEYBOARD1_DOWN) {
+ 370   2                      KEYBOARD1_DOWN = 0;
+ 371   2              }
+ 372   1              if(KEYBOARD2_DOWN) {
+ 373   2                      KEYBOARD2_DOWN = 0;
+ 374   2              }
+ 375   1              if(KEYBOARD3_DOWN) {
+ 376   2                      KEYBOARD3_DOWN = 0;
+ 377   2              }
+ 378   1              if(KEYBOARD5_DOWN) {
+ 379   2                      KEYBOARD5_DOWN = 0;
+ 380   2              }
+ 381   1              if(KEYBOARD6_DOWN) {
+ 382   2                      KEYBOARD6_DOWN = 0;
+ 383   2              }
+ 384   1              if(KEYBOARD7_DOWN) {
+ 385   2                      KEYBOARD7_DOWN = 0;
+ 386   2              }
+ 387   1              if(KEYBOARD9_DOWN) {
+ 388   2                      KEYBOARD9_DOWN = 0;
+ 389   2              }
+ 390   1              if(KEYBOARD10_DOWN) {
+ 391   2                      KEYBOARD10_DOWN = 0;
+ 392   2              }
+ 393   1              if(KEYBOARD11_DOWN) {
+ 394   2                      KEYBOARD11_DOWN = 0;
+ 395   2              }
+ 396   1              if(KEYBOARD12_DOWN) {
+ 397   2                      KEYBOARD12_DOWN = 0;
+ 398   2              }
+ 399   1              if(KEYBOARD14_DOWN) {
+ 400   2                      KEYBOARD14_DOWN = 0;
+ 401   2              }
+ 402   1              if(KEYBOARD16_DOWN) {
+ 403   2                      KEYBOARD16_DOWN = 0;
+ 404   2              }
+ 405   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1462    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      5       5
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

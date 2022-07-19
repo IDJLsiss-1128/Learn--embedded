@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\calculator.obj",
+".\Objects\keyboard.obj",
+".\Objects\interrupts.obj",
+".\Objects\tuble.obj" 
+TO ".\Objects\calulator" 
+PRINT(".\Listings\calulator.m51") RAMSIZE(256) 

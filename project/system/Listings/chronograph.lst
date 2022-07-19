@@ -1,0 +1,161 @@
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 19:40:23 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CHRONOGRAPH
+OBJECT MODULE PLACED IN .\Objects\chronograph.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\chronograph.c OPTIMIZE(8,SPEED) BROWSE 
+                    -INCDIR(..\..\source\module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\chronograph.lst) OBJECT(.\Objects\chronogra
+                    -ph.obj)
+
+line level    source
+
+   1          #include "chronograph.h"
+   2          #include "tuble.h"
+   3          #include "keyboard.h"
+   4          
+   5          bit sym_run = 0, // 计时与暂停
+   6                  sym_cord = 0; // 计时与记录
+   7          uint8 cord_count = 0, cord_count_free = 0; // 记录游标
+   8          uint16 chronograph_count = 0,  // 正常计时
+   9                  chronograph_cord_count = 0; // 当前记录
+  10          uint16 chronograph_cord[10] = {0,0,0,0,0,0,0,0,0,0};
+  11          
+  12          void init_chronograph_cord() {
+  13   1              uint8 cir_index = 0;
+  14   1              for(cir_index = 0; cir_index < 10; cir_index++) chronograph_cord[cir_index] = 0;
+  15   1      }
+  16          
+  17          /**
+  18           * @brief 初始计时器
+  19           */
+  20          void init_chronograph() {
+  21   1              display_point_site_tuble(1);
+  22   1              updata_value_site_tuble(0,0);
+  23   1              updata_value_site_tuble(1,0);
+  24   1      }
+  25          
+  26          /**
+  27           * @brief 更新计时时间
+  28           */
+  29          void updata_chronograph() {
+  30   1              if(sym_run) {
+  31   2                      chronograph_count++;
+  32   2                      if(chronograph_count >= 10) sym_zore = 0;
+  33   2              }
+  34   1              if(sym_cord) {
+  35   2                      updata_value_all_tuble(chronograph_cord_count, 10);
+  36   2                      if(!chronograph_cord_count) updata_value_site_tuble(1,0);
+  37   2              } // 显示记录
+  38   1              else {
+  39   2                      updata_value_all_tuble(chronograph_count, 10);
+  40   2                      if(!(chronograph_count/10)) updata_value_site_tuble(1,0);
+  41   2              } // 显示计时
+  42   1              display_point_site_tuble(1);
+  43   1              chronograph_count %= 10000000;
+  44   1      }
+  45          
+  46          /**
+  47           * @brief 键盘检测效应
+  48           */
+  49          void keyboard_chronograph() {
+  50   1              if(KEYBOARD4_DOWN) {
+  51   2                      KEYBOARD4_DOWN = 0;
+  52   2                      cord_count_free++;
+  53   2                      look_cord_chronograph();
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 19:40:23 PAGE 2   
+
+  54   2                      if(cord_count_free >= 10) cord_count_free = 0;
+  55   2              }
+  56   1              if(KEYBOARD8_DOWN) {
+  57   2                      KEYBOARD8_DOWN = 0;
+  58   2                      cord_count_free--;
+  59   2                      look_cord_chronograph();
+  60   2                      if(cord_count_free >= 10) cord_count_free = 9;
+  61   2              }
+  62   1              if(KEYBOARD12_DOWN) {
+  63   2                      KEYBOARD12_DOWN = 0;
+  64   2                      if((cord_count < 10) && (chronograph_cord[cord_count] == 0)) {
+  65   3                              chronograph_cord[cord_count++] = chronograph_count;
+  66   3                      } // 将当前时间记录到数组
+  67   2              }
+  68   1              if(KEYBOARD13_DOWN) {
+  69   2                      KEYBOARD13_DOWN = 0;
+  70   2                      chronograph_count = 0,
+  71   2                      chronograph_cord_count = 0;
+  72   2                      sym_zore = 1;
+  73   2                      sym_run = 0;
+  74   2                      cord_count = 0;
+  75   2                      cord_count_free;
+*** WARNING C275 IN LINE 75 OF ..\..\source\chronograph.c: expression with possibly no effect
+  76   2                      init_chronograph_cord();
+  77   2              }
+  78   1              if(KEYBOARD15_DOWN) {
+  79   2                      KEYBOARD15_DOWN = 0;
+  80   2                      sym_run = !sym_run;
+  81   2              }
+  82   1              if(KEYBOARD16_DOWN) {
+  83   2                      KEYBOARD16_DOWN = 0;
+  84   2                      sym_cord = !sym_cord;
+  85   2                      look_cord_chronograph();
+  86   2              }
+  87   1              /*防止与其它程序的按键反应冲突*/
+  88   1              if(KEYBOARD1_DOWN) {
+  89   2                      KEYBOARD1_DOWN = 0;
+  90   2              }
+  91   1              if(KEYBOARD2_DOWN) {
+  92   2                      KEYBOARD2_DOWN = 0;
+  93   2              }
+  94   1              if(KEYBOARD3_DOWN) {
+  95   2                      KEYBOARD3_DOWN = 0;
+  96   2              }
+  97   1              
+  98   1              if(KEYBOARD5_DOWN) {
+  99   2                      KEYBOARD5_DOWN = 0;
+ 100   2              }
+ 101   1              if(KEYBOARD6_DOWN) {
+ 102   2                      KEYBOARD6_DOWN = 0;
+ 103   2              }
+ 104   1              if(KEYBOARD7_DOWN) {
+ 105   2                      KEYBOARD7_DOWN = 0;
+ 106   2              }
+ 107   1              
+ 108   1              if(KEYBOARD9_DOWN) {
+ 109   2                      KEYBOARD9_DOWN = 0;
+ 110   2              }
+ 111   1              if(KEYBOARD10_DOWN) {
+ 112   2                      KEYBOARD10_DOWN = 0;
+ 113   2              }
+ 114   1              if(KEYBOARD11_DOWN) {
+C51 COMPILER V9.59.0.0   CHRONOGRAPH                                                       06/15/2022 19:40:23 PAGE 3   
+
+ 115   2                      KEYBOARD11_DOWN = 0;
+ 116   2              }
+ 117   1              if(KEYBOARD14_DOWN) {
+ 118   2                      KEYBOARD14_DOWN = 0;
+ 119   2              }
+ 120   1              if(KEYBOARD16_DOWN) {
+ 121   2                      KEYBOARD16_DOWN = 0;
+ 122   2              }
+ 123   1      }
+ 124          
+ 125          /**
+ 126           * @brief 查看记录
+ 127           */
+ 128          void look_cord_chronograph() {
+ 129   1              display_point_site_tuble(1);
+ 130   1              chronograph_cord_count = chronograph_cord[cord_count_free%10];
+ 131   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    360    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     26    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

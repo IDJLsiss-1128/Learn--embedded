@@ -1,0 +1,78 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 18:12:50 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\source\
+                    -module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "chronograph.h"
+   3          #include "interrupts.h"
+   4          #include "tuble.h"
+   5          #include "keyboard.h"
+   6          
+   7          bit sym_100ms = 0, sym_5ms = 0, sym_25ms = 0;
+   8          uint8 chronograph_site = 0;
+   9          uint16 system_chronograph_count = 0;
+  10          
+  11          int main() {
+  12   1          init_t0_1_interrupt(0xF7, 0x00);
+  13   1          init_chronograph();
+  14   1          while(1) {
+  15   2                      if(sym_5ms) {
+  16   3                              sym_5ms = 0;
+  17   3                              display_site_tuble(chronograph_site);
+  18   3                              chronograph_site++;
+  19   3                              if(chronograph_site >= 8) chronograph_site = 0;
+  20   3                      } // 扫描数码管
+  21   2                      if(sym_25ms) {
+  22   3                              detect_col_keyboard();
+  23   3                              keyboard_chronograph();
+  24   3                      } // 扫描键盘
+  25   2                      if(sym_100ms) {
+  26   3                              sym_100ms = 0;
+  27   3                              updata_chronograph();
+  28   3                      } // 更新计时
+  29   2          }
+  30   1          return 0;
+  31   1      }
+  32          
+  33          void chronograph_interrupt() interrupt 1 {
+  34   1          TR0 = 0;
+  35   1              TH0 = 0xF7;
+  36   1              TL0 = 0x00;
+  37   1              TR0 = 1;
+  38   1              if(system_chronograph_count%2 == 1) {
+  39   2                      sym_5ms = 1;
+  40   2              }
+  41   1              if(system_chronograph_count%10 == 7) {
+  42   2                      sym_25ms = 1;
+  43   2              }
+  44   1              if(system_chronograph_count%40 == 37) {
+  45   2                      sym_100ms = 1;
+  46   2              }
+  47   1              if(system_chronograph_count >= 400) {
+  48   2                      system_chronograph_count = 0;
+  49   2              }
+  50   1              system_chronograph_count++;
+  51   1      }
+*** WARNING C294 IN LINE 30 OF main.c: unreachable code
+
+
+C51 COMPILER V9.59.0.0   MAIN                                                              06/15/2022 18:12:50 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    171    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

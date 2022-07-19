@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\led.obj",
+".\Objects\interrupts.obj",
+".\Objects\heartbeat.obj" 
+TO ".\Objects\heartbeat" 
+PRINT(".\Listings\heartbeat.m51") RAMSIZE(256) 

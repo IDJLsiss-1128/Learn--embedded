@@ -1,0 +1,75 @@
+C51 COMPILER V9.59.0.0   KEY                                                               06/15/2022 19:40:22 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\Objects\key.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\module\key.c OPTIMIZE(8,SPEED) BROWSE I
+                    -NCDIR(..\..\source\module;..\..\source) DEBUG OBJECTEXTEND PRINT(.\Listings\key.lst) OBJECT(.\Objects\key.obj)
+
+line level    source
+
+   1          #include "key.h"
+   2          #include "type.h"
+   3          
+   4          /*独立按键模块引脚*/
+   5          sbit KEY1 = P3^1; // K1
+   6          sbit KEY2 = P3^0; // K2
+   7          sbit KEY3 = P3^2; // K3
+   8          sbit KEY4 = P3^3; // K4
+   9          
+  10          /*独立按键状态标志*/
+  11          bit KEY1_DOWN = 0, KEY2_DOWN = 0, KEY3_DOWN = 0, KEY4_DOWN = 0; // 独立按键按下状态
+  12          bit KEY1_UP = 0, KEY2_UP = 0, KEY3_UP = 0, KEY4_UP = 0; // 独立按键释放状态
+  13          
+  14          /**
+  15           * @brief 检测独立按键模块
+  16           */
+  17          void detect_key() {
+  18   1              static uint8 KEY1_FILTER =0xFF,KEY2_FILTER=0xFF, KEY3_FILTER=0xFF,KEY4_FILTER=0xFF;
+  19   1              KEY1_FILTER <<= 1;
+  20   1              KEY2_FILTER <<= 1;
+  21   1              KEY3_FILTER <<= 1;
+  22   1              KEY4_FILTER <<= 1;
+  23   1              if(KEY1) KEY1_FILTER |= 0x01;
+  24   1              if(KEY2) KEY2_FILTER |= 0x01;
+  25   1              if(KEY3) KEY3_FILTER |= 0x01;
+  26   1              if(KEY4) KEY4_FILTER |= 0x01;
+  27   1              if((KEY1_FILTER&0x0F) == 0x0D) KEY1_FILTER |= 0x02;
+  28   1              if((KEY2_FILTER&0x0F) == 0x0D) KEY2_FILTER |= 0x02;
+  29   1              if((KEY3_FILTER&0x0F) == 0x0D) KEY3_FILTER |= 0x02;
+  30   1              if((KEY4_FILTER&0x0F) == 0x0D) KEY4_FILTER |= 0x02;
+  31   1              if((KEY1_FILTER&0x0F) == 0x02) KEY1_FILTER &= 0x0D;
+  32   1              if((KEY2_FILTER&0x0F) == 0x02) KEY2_FILTER &= 0x0D;
+  33   1              if((KEY3_FILTER&0x0F) == 0x02) KEY3_FILTER &= 0x0D;
+  34   1              if((KEY4_FILTER&0x0F) == 0x02) KEY4_FILTER &= 0x0D;
+  35   1              if(KEY1_FILTER == 0xF0) KEY1_DOWN = 1;
+  36   1              if(KEY2_FILTER == 0xF0) KEY2_DOWN = 1;
+  37   1              if(KEY3_FILTER == 0xF0) KEY3_DOWN = 1;
+  38   1              if(KEY4_FILTER == 0xF0) KEY4_DOWN = 1;
+  39   1              if(KEY1_FILTER == 0x0F) KEY1_UP = 1;
+  40   1              if(KEY2_FILTER == 0x0F) KEY2_UP = 1;
+  41   1              if(KEY3_FILTER == 0x0F) KEY3_UP = 1;
+  42   1              if(KEY4_FILTER == 0x0F) KEY4_UP = 1;
+  43   1      }
+  44          
+  45          
+  46          
+  47          
+  48          
+  49          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    207    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.59.0.0   KEY                                                               06/15/2022 19:40:22 PAGE 2   
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      8    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

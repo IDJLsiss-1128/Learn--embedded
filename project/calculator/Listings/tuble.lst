@@ -1,0 +1,149 @@
+C51 COMPILER V9.59.0.0   TUBLE                                                             06/13/2022 12:00:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TUBLE
+OBJECT MODULE PLACED IN .\Objects\tuble.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\module\tuble.c OPTIMIZE(8,SPEED) BROWSE
+                    - INCDIR(..\..\source;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\tuble.lst) OBJECT(.\Objects\tuble.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "tuble.h"
+   3          
+   4          /* 
+   5              数码管模块指定显示引脚
+   6              CBA     数码管位置
+   7              111         7
+   8              110         6
+   9              101         5
+  10              100         4
+  11              011         3
+  12              010         2
+  13              001         1
+  14              000         0
+  15          */
+  16          sbit TUBLE_A=P2^2; 
+  17          sbit TUBLE_B=P2^3;
+  18          sbit TUBLE_C=P2^4;
+  19          
+  20          /*
+  21              数码管显示字形
+  22              注：若想要显示小数点，则令字形码的高位为 1 即可
+  23          */ 
+  24          code uint8 font_tuble[] = {
+  25                  0x3F, 0x06, 0x5B, 0x4F, // 0 1 2 3
+  26              0x66, 0x6D, 0x7D, 0x07, // 4 5 6 7
+  27              0x7F, 0x6F, 0x77, 0x7C, // 8 9 A B
+  28              0x39, 0x5E, 0x79, 0x71,  // C D E F
+  29                  0x40, 0x00
+  30          };
+  31          
+  32          /*
+  33              数码管显示字形缓冲区
+  34              调度不同的显示引脚，显示对应的缓冲区内容
+  35          */
+  36          uint8 display_buffer[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // 扫描数码管时显示�
+             -�容
+  37          uint8 judge_buffer[8] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}; // 扫描数码管时是否显�
+             -�
+  38          
+  39          /**
+  40           * @brief 显示数码管模块点
+  41           * 通过par_site指定位置显示点
+  42           * @param par_site 数码管的位序
+  43           */
+  44          void display_point_site_tuble(uint8 par_site) {
+  45   1          uint8 tmp_buff_site = display_buffer[par_site]  | 0x80; // 仅修改缓冲区指定位置的高位为1
+             -，保留原始数据的显示
+  46   1          display_buffer[par_site] = tmp_buff_site; 
+  47   1      }
+  48          
+  49          /**
+  50           * @brief 消除除数码管模块点
+  51           * 通过par_site指定位置消除点
+C51 COMPILER V9.59.0.0   TUBLE                                                             06/13/2022 12:00:13 PAGE 2   
+
+  52           * @param par_site 数码管的位序
+  53           */
+  54          void clear_point_site_tuble(uint8 par_site) {
+  55   1          uint8 tmp_buff_site = display_buffer[par_site]  & 0x7F;
+  56   1          display_buffer[par_site] = tmp_buff_site & 0x7F; // 仅修改缓冲区指定位置的高位为0，保�
+             -��原始数据的显示
+  57   1      }
+  58          
+  59          /**
+  60           * @brief 修改数码管模块缓冲区
+  61           * 通过par_site指定位置修改缓冲区的内容
+  62           * @param par_site 数码管的位序
+  63           * @param par_value 数码管缓冲区的内容
+  64           */
+  65          void updata_value_site_tuble(uint8 par_site, uint8 par_value) {
+  66   1          uint8 tmp_buff_site = display_buffer[par_site] & 0x80; // 保留高位，即点的显示状态
+  67   1          display_buffer[par_site] = tmp_buff_site | font_tuble[par_value];
+  68   1      }
+  69          
+  70          /**
+  71           * @brief 修改数码管模块缓冲区内容
+  72           * 通过par_data与par_advance结合，对缓冲区进行内容更新
+  73           * @param par_data 显示的内容
+  74           * @param par_advance 进制
+  75           */
+  76          void updata_value_all_tuble(uint32 par_data, uint8 par_advance) {
+  77   1          uint8 tmp_digit = 0;
+  78   1          do {
+  79   2              display_buffer[tmp_digit++] = font_tuble[par_data%par_advance];
+  80   2              par_data /= 10;
+  81   2          }while(par_data > 0);
+  82   1          while(tmp_digit < 8) display_buffer[tmp_digit++] = 0x00;
+  83   1      }
+  84          
+  85          /**
+  86           * @brief 显示数码管模块内容
+  87           * 显示缓冲区所有的内容
+  88           */
+  89          void display_all_tuble() {
+  90   1          uint8 tmp_cycle;
+  91   1          for(tmp_cycle = 0; tmp_cycle < 8; ++tmp_cycle) {
+  92   2              display_site_tuble(tmp_cycle);
+  93   2          }
+  94   1      }
+  95          
+  96          /**
+  97           * @brief 显示数码管模块缓冲区内容
+  98           * 通过par_site显示缓冲区指定位置的内容
+  99           * @param par_site 缓冲区序列
+ 100           */
+ 101          void display_site_tuble(uint8 par_site) {
+ 102   1          P0 = 0x00;
+ 103   1          TUBLE_A = par_site%2;
+ 104   1          TUBLE_B = par_site/2%2;
+ 105   1          TUBLE_C = par_site/4%2;
+ 106   1          if(judge_buffer[par_site])
+ 107   1              P0 = display_buffer[par_site];
+ 108   1      }
+ 109          
+ 110          /**
+ 111           * @brief 显示状态，主要用于闪烁
+ 112           * @param par_site 显示状态缓冲区
+C51 COMPILER V9.59.0.0   TUBLE                                                             06/13/2022 12:00:13 PAGE 3   
+
+ 113           * @param par_glint 显示状态缓冲区内容
+ 114           */
+ 115          void glint_site_tuble(uint8 par_site , uint8 par_glint) {
+ 116   1              judge_buffer[par_site] = par_glint;
+ 117   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    224    ----
+   CONSTANT SIZE    =     18    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

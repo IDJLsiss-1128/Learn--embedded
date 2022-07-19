@@ -1,0 +1,7 @@
+".\Objects\main.obj",
+".\Objects\chronograph.obj",
+".\Objects\tuble.obj",
+".\Objects\interrupts.obj",
+".\Objects\keyboard.obj" 
+TO ".\Objects\chronograph" 
+PRINT(".\Listings\chronograph.m51") RAMSIZE(256) 

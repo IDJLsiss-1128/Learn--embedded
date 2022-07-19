@@ -1,0 +1,12 @@
+".\Objects\main.obj",
+".\Objects\calculator.obj",
+".\Objects\clock.obj",
+".\Objects\heartbeat.obj",
+".\Objects\interrupts.obj",
+".\Objects\key.obj",
+".\Objects\keyboard.obj",
+".\Objects\tuble.obj",
+".\Objects\led.obj",
+".\Objects\chronograph.obj" 
+TO ".\Objects\system" 
+PRINT(".\Listings\system.m51") RAMSIZE(256) 

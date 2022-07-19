@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\player.obj",
+".\Objects\beep.obj",
+".\Objects\interrupts.obj" 
+TO ".\Objects\player" 
+PRINT(".\Listings\player.m51") RAMSIZE(256) 

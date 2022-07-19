@@ -1,0 +1,8 @@
+数字连续输入的对象是operator_b，同时显示operator_b
+符号连续输入的对象是operator_c，同时显示operator_a
+
+显示关系
+计算器处于初始状态：
+显示operator_a 待输入的是operator_b和operator_c
+数字：显示operator_b 待输入的是operator_b和operator_c
+字符：显示operator_a 待输入的是operator_b和operator_c

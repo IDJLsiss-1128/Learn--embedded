@@ -1,0 +1,199 @@
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          06/13/2022 12:00:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEYBOARD
+OBJECT MODULE PLACED IN .\Objects\keyboard.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\module\keyboard.c OPTIMIZE(8,SPEED) BRO
+                    -WSE INCDIR(..\..\source;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\keyboard.lst) OBJECT(.\Objects\keyboard
+                    -.obj)
+
+line level    source
+
+   1          #include "keyboard.h"
+   2          #include "type.h"
+   3          
+   4          /*矩阵键盘模块行和列引脚*/
+   5          sbit COL4 = P1^0; // 第1行
+   6          sbit COL3 = P1^1; // 第2行
+   7          sbit COL2 = P1^2; // 第3行
+   8          sbit COL1 = P1^3; // 第4行
+   9          sbit ROW4 = P1^4; // 第1行
+  10          sbit ROW3 = P1^5; // 第2列
+  11          sbit ROW2 = P1^6; // 第3列
+  12          sbit ROW1 = P1^7; // 第4列
+  13          
+  14          /*矩阵键盘模块按键状态*/
+  15          bit KEYBOARD1_OLD = 1 , KEYBOARD2_OLD = 1, KEYBOARD3_OLD = 1, KEYBOARD4_OLD = 1,
+  16                          KEYBOARD5_OLD = 1, KEYBOARD6_OLD = 1, KEYBOARD7_OLD = 1, KEYBOARD8_OLD = 1, 
+  17                          KEYBOARD9_OLD = 1, KEYBOARD10_OLD = 1, KEYBOARD11_OLD = 1, KEYBOARD12_OLD = 1, 
+  18                          KEYBOARD13_OLD = 1, KEYBOARD14_OLD = 1, KEYBOARD15_OLD = 1, KEYBOARD16_OLD = 1;
+  19          bit KEYBOARD1_NEW = 1, KEYBOARD2_NEW = 1, KEYBOARD3_NEW = 1 , KEYBOARD4_NEW = 1,
+  20                          KEYBOARD5_NEW = 1, KEYBOARD6_NEW = 1, KEYBOARD7_NEW = 1 , KEYBOARD8_NEW = 1, 
+  21                          KEYBOARD9_NEW = 1, KEYBOARD10_NEW = 1, KEYBOARD11_NEW = 1, KEYBOARD12_NEW = 1, 
+  22                          KEYBOARD13_NEW = 1, KEYBOARD14_NEW = 1, KEYBOARD15_NEW = 1, KEYBOARD16_NEW = 1;
+  23          bit KEYBOARD1_DOWN = 0, KEYBOARD2_DOWN = 0, KEYBOARD3_DOWN = 0, KEYBOARD4_DOWN = 0,
+  24                          KEYBOARD5_DOWN = 0, KEYBOARD6_DOWN = 0, KEYBOARD7_DOWN = 0, KEYBOARD8_DOWN = 0, 
+  25                          KEYBOARD9_DOWN = 0, KEYBOARD10_DOWN = 0, KEYBOARD11_DOWN = 0, KEYBOARD12_DOWN = 0, 
+  26                          KEYBOARD13_DOWN = 0, KEYBOARD14_DOWN = 0, KEYBOARD15_DOWN = 0, KEYBOARD16_DOWN = 0;
+  27          
+  28          /**
+  29           * @brief 列方式进行矩阵键盘检测
+  30           */
+  31          void detect_row_keyboard(){
+  32   1              static char tmp_col = 0;
+  33   1              switch(tmp_col){
+  34   2                      case 0:
+  35   2                              P1=0x7F;
+  36   2                              KEYBOARD1_NEW = COL1;
+  37   2                              KEYBOARD2_NEW = COL2;
+  38   2                              KEYBOARD3_NEW = COL3;
+  39   2                              KEYBOARD4_NEW = COL4;
+  40   2                              if(!KEYBOARD1_OLD && KEYBOARD1_NEW) KEYBOARD1_DOWN = 1;
+  41   2                              if(!KEYBOARD2_OLD && KEYBOARD2_NEW) KEYBOARD2_DOWN = 1;
+  42   2                              if(!KEYBOARD3_OLD && KEYBOARD3_NEW) KEYBOARD3_DOWN = 1;
+  43   2                              if(!KEYBOARD4_OLD && KEYBOARD4_NEW) KEYBOARD4_DOWN = 1;
+  44   2                              KEYBOARD1_OLD = KEYBOARD1_NEW;
+  45   2                              KEYBOARD2_OLD = KEYBOARD2_NEW;
+  46   2                              KEYBOARD3_OLD = KEYBOARD3_NEW;
+  47   2                              KEYBOARD4_OLD = KEYBOARD4_NEW;
+  48   2                              break;
+  49   2                      case 1:
+  50   2                              P1=0xBF;
+  51   2                              KEYBOARD5_NEW = COL1;
+  52   2                              KEYBOARD6_NEW = COL2;
+  53   2                              KEYBOARD7_NEW = COL3;
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          06/13/2022 12:00:13 PAGE 2   
+
+  54   2                              KEYBOARD8_NEW = COL4;
+  55   2                              if(!KEYBOARD5_OLD && KEYBOARD5_NEW) KEYBOARD5_DOWN = 1;
+  56   2                              if(!KEYBOARD6_OLD && KEYBOARD6_NEW) KEYBOARD6_DOWN = 1;
+  57   2                              if(!KEYBOARD7_OLD && KEYBOARD7_NEW) KEYBOARD7_DOWN = 1;
+  58   2                              if(!KEYBOARD8_OLD && KEYBOARD8_NEW) KEYBOARD8_DOWN = 1;
+  59   2                              KEYBOARD5_OLD = KEYBOARD5_NEW;
+  60   2                              KEYBOARD6_OLD = KEYBOARD6_NEW;
+  61   2                              KEYBOARD7_OLD = KEYBOARD7_NEW;
+  62   2                              KEYBOARD8_OLD = KEYBOARD8_NEW;
+  63   2                              break;
+  64   2                      case 2:
+  65   2                              P1=0xDF;
+  66   2                              KEYBOARD9_NEW = COL1;
+  67   2                              KEYBOARD10_NEW = COL2;
+  68   2                              KEYBOARD11_NEW = COL3;
+  69   2                              KEYBOARD12_NEW = COL4;
+  70   2                              if(!KEYBOARD9_OLD && KEYBOARD9_NEW) KEYBOARD9_DOWN = 1;
+  71   2                              if(!KEYBOARD10_OLD && KEYBOARD10_NEW) KEYBOARD10_DOWN = 1;
+  72   2                              if(!KEYBOARD11_OLD && KEYBOARD11_NEW) KEYBOARD11_DOWN = 1;
+  73   2                              if(!KEYBOARD12_OLD && KEYBOARD12_NEW) KEYBOARD12_DOWN = 1;
+  74   2                              KEYBOARD9_OLD = KEYBOARD9_NEW;
+  75   2                              KEYBOARD10_OLD = KEYBOARD10_NEW;
+  76   2                              KEYBOARD11_OLD = KEYBOARD11_NEW;
+  77   2                              KEYBOARD12_OLD = KEYBOARD12_NEW;
+  78   2                              break;
+  79   2                      case 3:
+  80   2                              P1=0xEF;
+  81   2                              KEYBOARD13_NEW = COL1;
+  82   2                              KEYBOARD14_NEW = COL2;
+  83   2                              KEYBOARD15_NEW = COL3;
+  84   2                              KEYBOARD16_NEW = COL4;
+  85   2                              if(!KEYBOARD13_OLD && KEYBOARD13_NEW) KEYBOARD13_DOWN = 1;
+  86   2                              if(!KEYBOARD14_OLD && KEYBOARD14_NEW) KEYBOARD14_DOWN = 1;
+  87   2                              if(!KEYBOARD15_OLD && KEYBOARD15_NEW) KEYBOARD15_DOWN = 1;
+  88   2                              if(!KEYBOARD16_OLD && KEYBOARD16_NEW) KEYBOARD16_DOWN = 1;
+  89   2                              KEYBOARD13_OLD = KEYBOARD13_NEW;
+  90   2                              KEYBOARD14_OLD = KEYBOARD14_NEW;
+  91   2                              KEYBOARD15_OLD = KEYBOARD15_NEW;
+  92   2                              KEYBOARD16_OLD = KEYBOARD16_NEW;
+  93   2                              break;
+  94   2              }
+  95   1              tmp_col++;
+  96   1              tmp_col %= 4;
+  97   1      }
+  98          
+  99          /**
+ 100           * @brief 行方式进行矩阵键盘检测
+ 101           */
+ 102          void detect_col_keyboard(){
+ 103   1              static char tmp_col = 0;
+ 104   1              switch(tmp_col){
+ 105   2                      case 0:
+ 106   2                              P1=0xF7;
+ 107   2                              KEYBOARD1_NEW = ROW1;
+ 108   2                              KEYBOARD5_NEW = ROW2;
+ 109   2                              KEYBOARD9_NEW = ROW3;
+ 110   2                              KEYBOARD13_NEW = ROW4;
+ 111   2                              if(!KEYBOARD1_OLD && KEYBOARD1_NEW) KEYBOARD1_DOWN = 1;
+ 112   2                              if(!KEYBOARD5_OLD && KEYBOARD5_NEW) KEYBOARD5_DOWN = 1;
+ 113   2                              if(!KEYBOARD9_OLD && KEYBOARD9_NEW) KEYBOARD9_DOWN = 1;
+ 114   2                              if(!KEYBOARD13_OLD && KEYBOARD13_NEW) KEYBOARD13_DOWN = 1;
+ 115   2                              KEYBOARD1_OLD = KEYBOARD1_NEW;
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          06/13/2022 12:00:13 PAGE 3   
+
+ 116   2                              KEYBOARD5_OLD = KEYBOARD5_NEW;
+ 117   2                              KEYBOARD9_OLD = KEYBOARD9_NEW;
+ 118   2                              KEYBOARD13_OLD = KEYBOARD13_NEW;
+ 119   2                              break;
+ 120   2                      case 1:
+ 121   2                              P1=0xFB;
+ 122   2                              KEYBOARD2_NEW = ROW1;
+ 123   2                              KEYBOARD6_NEW = ROW2;
+ 124   2                              KEYBOARD10_NEW = ROW3;
+ 125   2                              KEYBOARD14_NEW = ROW4;
+ 126   2                              if(!KEYBOARD2_OLD && KEYBOARD2_NEW) KEYBOARD2_DOWN = 1;
+ 127   2                              if(!KEYBOARD6_OLD && KEYBOARD6_NEW) KEYBOARD6_DOWN = 1;
+ 128   2                              if(!KEYBOARD10_OLD && KEYBOARD10_NEW) KEYBOARD10_DOWN = 1;
+ 129   2                              if(!KEYBOARD14_OLD && KEYBOARD14_NEW) KEYBOARD14_DOWN = 1;
+ 130   2                              KEYBOARD2_OLD = KEYBOARD2_NEW;
+ 131   2                              KEYBOARD6_OLD = KEYBOARD6_NEW;
+ 132   2                              KEYBOARD10_OLD = KEYBOARD10_NEW;
+ 133   2                              KEYBOARD14_OLD = KEYBOARD14_NEW;
+ 134   2                              break;
+ 135   2                      case 2:
+ 136   2                              P1=0xFD;
+ 137   2                              KEYBOARD3_NEW = ROW1;
+ 138   2                              KEYBOARD7_NEW = ROW2;
+ 139   2                              KEYBOARD11_NEW = ROW3;
+ 140   2                              KEYBOARD15_NEW = ROW4;
+ 141   2                              if(!KEYBOARD3_OLD && KEYBOARD3_NEW) KEYBOARD3_DOWN = 1;
+ 142   2                              if(!KEYBOARD7_OLD && KEYBOARD7_NEW) KEYBOARD7_DOWN = 1;
+ 143   2                              if(!KEYBOARD11_OLD && KEYBOARD11_NEW) KEYBOARD11_DOWN = 1;
+ 144   2                              if(!KEYBOARD15_OLD && KEYBOARD15_NEW) KEYBOARD15_DOWN = 1;
+ 145   2                              KEYBOARD3_OLD = KEYBOARD3_NEW;
+ 146   2                              KEYBOARD7_OLD = KEYBOARD7_NEW;
+ 147   2                              KEYBOARD11_OLD = KEYBOARD11_NEW;
+ 148   2                              KEYBOARD15_OLD = KEYBOARD15_NEW;
+ 149   2                              break;
+ 150   2                      case 3:
+ 151   2                              P1=0xFE;
+ 152   2                              KEYBOARD4_NEW = ROW1;
+ 153   2                              KEYBOARD8_NEW = ROW2;
+ 154   2                              KEYBOARD12_NEW = ROW3;
+ 155   2                              KEYBOARD16_NEW = ROW4;
+ 156   2                              if(!KEYBOARD4_OLD && KEYBOARD4_NEW) KEYBOARD4_DOWN = 1;
+ 157   2                              if(!KEYBOARD8_OLD && KEYBOARD8_NEW) KEYBOARD8_DOWN = 1;
+ 158   2                              if(!KEYBOARD12_OLD && KEYBOARD12_NEW) KEYBOARD12_DOWN = 1;
+ 159   2                              if(!KEYBOARD16_OLD && KEYBOARD16_NEW) KEYBOARD16_DOWN = 1;
+ 160   2                              KEYBOARD4_OLD = KEYBOARD4_NEW;
+ 161   2                              KEYBOARD8_OLD = KEYBOARD8_NEW;
+ 162   2                              KEYBOARD12_OLD = KEYBOARD12_NEW;
+ 163   2                              KEYBOARD16_OLD = KEYBOARD16_NEW;
+ 164   2                              break;
+ 165   2              }
+ 166   1              tmp_col++;
+ 167   1              tmp_col %= 4;
+ 168   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    628    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          06/13/2022 12:00:13 PAGE 4   
+
+   BIT SIZE         =     48    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

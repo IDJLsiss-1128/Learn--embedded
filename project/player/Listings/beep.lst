@@ -1,0 +1,76 @@
+C51 COMPILER V9.59.0.0   BEEP                                                              06/13/2022 20:20:00 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BEEP
+OBJECT MODULE PLACED IN .\Objects\beep.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE ..\..\source\module\beep.c OPTIMIZE(8,SPEED) BROWSE 
+                    -INCDIR(..\..\source;..\..\source\module) DEBUG OBJECTEXTEND PRINT(.\Listings\beep.lst) OBJECT(.\Objects\beep.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "beep.h"
+   3          
+   4          /*蜂呜器模块引脚*/
+   5          sbit BEEP = P1^5;
+   6          
+   7          /*蜂呜器模块音阶*/
+   8          code uint8 scale_H[][7] = {
+   9              0x00, // 解决0位的问题
+  10              0x00, 0x00, 0x00, 0x00, 0xFB, 0xFB, 0xFC, // 低1,2,3,4,5,6,7 == 1,2,3,4,5,6,7
+  11                  0xFC, 0xFC, 0xFD, 0xFD, 0xFD, 0xFD, 0xFE, // 中1,2,3,4,5,6,7 == 1+7,2+7,3+7,4+7,5+7,6+7,7+7
+  12                  0xFE, 0xFE, 0xFE, 0x00, 0x00, 0x00, 0x00  // 高1,2,3,4,5,6,7 == 1+14,2+14,3+14,4+14,5+14,6+14,7+14
+  13                  // 超高1,2,3,4,5,6,7 == 1+21,2+21,3+21,4+21,5+21,6+21,7+21
+  14          }; // 音阶高位
+  15          
+  16          code uint8 scale_L[][7] = {
+  17              0x00, // 解决0位的问题
+  18              0x00, 0x00, 0x00, 0x00, 0x04, 0x90, 0x0C, // 低1,2,3,4,5,6,7 == 1,2,3,4,5,6,7
+  19                  0x44, 0xAC, 0x09, 0x34, 0x82, 0xC8, 0x06, // 中1,2,3,4,5,6,7 == 1+7,2+7,3+7,4+7,5+7,6+7,7+7
+  20                  0x22, 0x56, 0x85, 0x00, 0x00, 0x00, 0x00  // 高1,2,3,4,5,6,7 == 1+14,2+14,3+14,4+14,5+14,6+14,7+14
+  21                  // 超高1,2,3,4,5,6,7 == 1+21,2+21,3+21,4+21,5+21,6+21,7+21
+  22          }; // 音阶低位
+  23          
+  24          /*蜂呜器模块音乐缓冲区*/
+  25          uint8 music_buff[2] = {0x00, 0x00};
+  26          
+  27          /**
+  28           * @brief 启动蜂呜器
+  29           */
+  30          void on_beep() {
+  31   1          BEEP = 0;
+  32   1      }
+  33          
+  34          /**
+  35           * @brief 关闭蜂呜器
+  36           */
+  37          void off_beep() {
+  38   1          BEEP = 1;
+  39   1      }
+  40          
+  41          /**
+  42           * @brief 播放音符
+  43           * @param par_note 对应音符
+  44           * @return uint8* 音符缓冲区
+  45           */
+  46          uint8 *display_player(uint8 par_note) {
+  47   1          music_buff[0] = scale_H[par_note/7][par_note%7];
+  48   1          music_buff[1] = scale_L[par_note/7][par_note%7];
+  49   1          return music_buff;
+  50   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     81    ----
+C51 COMPILER V9.59.0.0   BEEP                                                              06/13/2022 20:20:00 PAGE 2   
+
+   CONSTANT SIZE    =     56    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
